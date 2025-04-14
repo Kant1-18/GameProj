@@ -29,3 +29,5 @@ lwjgl3/
 build/
 core/bin/
 core/build/
+lwjgl3/bin/
+lwjgl3/build/
