@@ -4,11 +4,15 @@ public class Player {
     private String name;
     private Integer tokens;
     private Integer stake;
-    
-    public Player(String name, Integer tokens, Integer stake){
+    private Card sandCard;
+    private Card bloodCard;
+
+    public Player(String name, Integer tokens, Integer stake, Card sandCard, Card bloodCard){
         this.name = name;
         this.tokens = tokens;
         this.stake = stake;
+        this.sandCard = sandCard;
+        this.bloodCard = bloodCard;
     }
 
     public String getName(){
@@ -23,6 +27,14 @@ public class Player {
         return this.stake;
     }
 
+    public Card getSandCard(){
+        return this.sandCard;
+    }
+
+    public Card getBloodCard(){
+        return this.bloodCard;
+    }
+
     public void setName(String name){
         this.name = name;
     }
@@ -35,11 +47,18 @@ public class Player {
         this.stake = stake;
     }
 
+    public void setSandCard(Card sandCard){
+        this.sandCard = sandCard;
+    }
+
+    public void setBloodCard(Card bloodCard){
+        this.bloodCard = bloodCard;
+    }
+
     public Boolean bet(){
         if (tokens > 0){
             this.tokens -= 1;
             this.stake += 1;
-
             return true;
         }
         else{
@@ -47,7 +66,7 @@ public class Player {
         }
     }
 
-    public void loose(){
+    public void lose(){
         this.stake = 0;
         this.tokens -= 1;
     }
