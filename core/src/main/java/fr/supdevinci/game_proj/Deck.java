@@ -34,7 +34,7 @@ public class Deck {
         this.cards[cards.length - 1] = card;
     }
 
-    private void shuffle() {
+    public void shuffle() {
         int i, j;
         Card temp;
         for (i = 0; i < cards.length; i++) {
