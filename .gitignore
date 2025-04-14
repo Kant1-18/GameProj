@@ -25,7 +25,7 @@ replay_pid*
 
 lwjgl3/
 # Gradle files
-.gradle/8.13/
+.gradle/
 build/
 core/bin/
 core/build/
