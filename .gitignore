@@ -27,3 +27,5 @@ lwjgl3/
 # Gradle files
 .gradle/8.13/
 build/
+core/bin/
+core/build/
