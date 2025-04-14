@@ -1,43 +1,45 @@
 package fr.supdevinci.game_proj;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Deck {
     private String color;
-    private Card[] cards;
+    private ArrayList<Card> cards;
 
-    public Deck(String color, Card[] cards) {
+    public Deck(String color) {
         this.color = color;
-        this.cards = cards;
+        this.cards = new ArrayList<Card>();
     }
 
-    public String getColor() { return color; }
-
-    public void setColor(String color) { this.color = color; }
-
-    public Card[] getCards() { return cards; }
-
-    public void setCards(Card[] cards) { this.cards = cards; }
+    public ArrayList<Card> getCards() { return cards; }
 
     public Card drawCard() {
-        Card card = cards[-1];
-        this.cards = Arrays.copyOfRange(cards, 0, cards.length - 1);
+        Card card = this.cards.get(0);
+        this.cards.remove(0);
         return card;
     }
 
     public void addCard(Card card) {
-        this.cards = Arrays.copyOf(cards, cards.length + 1);
-        this.cards[cards.length - 1] = card;
+        this.cards.add(card);
     }
 
-    public void shuffle() {
-        int i, j;
-        Card temp;
-        for (i = 0; i < cards.length; i++) {
-            j = i + (int) (Math.random() * (cards.length - i));
-            temp = cards[i];
-            cards[i] = cards[j];
-            cards[j] = temp;
+    private void shuffle() {
+        ArrayList<Card> shuffledCards = new ArrayList<>();
+        while (this.cards.size() > 0) {
+            int randomIndex = (int) (Math.random() * this.cards.size());
+            shuffledCards.add(this.cards.get(randomIndex));
+            this.cards.remove(randomIndex);
         }
+        this.cards = shuffledCards;
+    }
+
+    public void deckInit() {
+        this.cards.add(new Card(null, color));
+        for (int i = 1; i <= 7; i++) {
+            this.cards.add(new Card(i, this.color));
+        }
+
+        this.shuffle();
     }
 }
