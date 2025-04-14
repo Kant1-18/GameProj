@@ -1,19 +1,23 @@
 package fr.supdevinci.game_proj;
 
 public class Player {
+    private Boolean isBot;
     private String name;
     private Integer tokens;
     private Integer stake;
     private Card sandCard;
     private Card bloodCard;
 
-    public Player(String name, Integer tokens, Integer stake, Card sandCard, Card bloodCard){
+    public Player(Boolean isBot, String name, Integer tokens, Integer stake, Card sandCard, Card bloodCard){
+        this.isBot = isBot;
         this.name = name;
         this.tokens = tokens;
         this.stake = stake;
         this.sandCard = sandCard;
         this.bloodCard = bloodCard;
     }
+
+    public Boolean getIsBot(){ return this.isBot; }
 
     public String getName(){ return this.name; }
 
@@ -24,6 +28,8 @@ public class Player {
     public Card getSandCard(){ return this.sandCard; }
 
     public Card getBloodCard(){ return this.bloodCard; }
+
+    public void setIsBot(Boolean isBot){ this.isBot = isBot; }
 
     public void setName(String name){ this.name = name; }
 
