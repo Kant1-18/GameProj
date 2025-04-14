@@ -11,17 +11,13 @@ public class Deck {
         this.cards = cards;
     }
 
-    public String getColor() {
-        return color;
-    }
+    public String getColor() { return color; }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+    public void setColor(String color) { this.color = color; }
 
-    public Card[] getCards() {
-        return cards;
-    }
+    public Card[] getCards() { return cards; }
+
+    public void setCards(Card[] cards) { this.cards = cards; }
 
     public Card drawCard() {
         Card card = cards[-1];

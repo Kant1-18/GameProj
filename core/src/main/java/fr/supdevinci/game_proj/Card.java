@@ -9,19 +9,11 @@ public class Card {
         this.color = color;
     }
 
-    public Integer getValue() {
-        return value;
-    }
+    public Integer getValue() { return value; }
 
-    public void setValue(Integer value) {
-        this.value = value;
-    }
+    public void setValue(Integer value) { this.value = value; }
 
-    public String getColor() {
-        return color;
-    }
+    public String getColor() { return color; }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+    public void setColor(String color) { this.color = color; }
 }
