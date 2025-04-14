@@ -1,10 +1,10 @@
 package fr.supdevinci.game_proj;
 
-public class cardClass {
+public class Card {
     private Integer value;
     private String color;
 
-    public cardClass(Integer value, String color) {
+    public Card(Integer value, String color) {
         this.value = value;
         this.color = color;
     }
