@@ -15,45 +15,25 @@ public class Player {
         this.bloodCard = bloodCard;
     }
 
-    public String getName(){
-        return this.name;
-    }
+    public String getName(){ return this.name; }
 
-    public Integer getTokens(){
-        return this.tokens;
-    }
+    public Integer getTokens(){ return this.tokens; }
 
-    public Integer getStake(){
-        return this.stake;
-    }
+    public Integer getStake(){ return this.stake; }
 
-    public Card getSandCard(){
-        return this.sandCard;
-    }
+    public Card getSandCard(){ return this.sandCard; }
 
-    public Card getBloodCard(){
-        return this.bloodCard;
-    }
+    public Card getBloodCard(){ return this.bloodCard; }
 
-    public void setName(String name){
-        this.name = name;
-    }
+    public void setName(String name){ this.name = name; }
 
-    public void setTokens(Integer tokens){
-        this.tokens = tokens;
-    }
+    public void setTokens(Integer tokens){ this.tokens = tokens; }
 
-    public void setStake(Integer stake){
-        this.stake = stake;
-    }
+    public void setStake(Integer stake){ this.stake = stake; }
 
-    public void setSandCard(Card sandCard){
-        this.sandCard = sandCard;
-    }
+    public void setSandCard(Card sandCard){ this.sandCard = sandCard; }
 
-    public void setBloodCard(Card bloodCard){
-        this.bloodCard = bloodCard;
-    }
+    public void setBloodCard(Card bloodCard){ this.bloodCard = bloodCard; }
 
     public Boolean bet(){
         if (tokens > 0){
