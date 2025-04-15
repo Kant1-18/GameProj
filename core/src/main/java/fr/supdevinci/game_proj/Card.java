@@ -23,15 +23,15 @@ public class Card {
     }
 
     public void setColor(String color) {
-        if (color != "sandy" || color != "bloody") {
+        if (color != "sandy" && color != "bloody") {
             throw new IllegalArgumentException("Color must be either 'sandy' or 'bloody'");
         }
         this.color = color;
     }
 
     public Card(Integer value, String color) {
-        this.setValue(value);
-        this.setColor(color);
+        this.value = value;
+        this.color = color;
 
         if (!assetLoaded) {
             CardAssets.load();
