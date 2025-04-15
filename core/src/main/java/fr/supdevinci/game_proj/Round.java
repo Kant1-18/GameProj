@@ -24,7 +24,7 @@ public class Round {
 
     public ArrayList<Player> getPlayers() { return players; }
 
-    private void removePlayer(Player player) {
+    public void removePlayer(Player player) {
         this.players.remove(player);
     }
 

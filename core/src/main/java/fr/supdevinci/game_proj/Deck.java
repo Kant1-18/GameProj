@@ -1,7 +1,6 @@
 package fr.supdevinci.game_proj;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Deck {
     private String color;
