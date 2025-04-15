@@ -22,14 +22,15 @@ public class CardAssets {
         int cardHeight = 330;
         int startX = 30;
         int startY = 55;
-        int spacingX = 30;
+        int spacingX = 33;
+        int spacingY = 52;
 
         sandyCards = new ArrayList<>();
         bloodyCards = new ArrayList<>();
 
         // Sandy cards (ligne 1)
         for (int i = 0; i < 8; i++) {
-            int x = startX + i * (cardWidth + (i * spacingX));
+            int x = startX + i * (cardWidth + spacingX);
             int y = startY;
             sandyCards.add(new TextureRegion(texture, x, y, cardWidth, cardHeight));
         }
@@ -37,8 +38,8 @@ public class CardAssets {
 
         // Bloody cards (ligne 2)
         for (int i = 0; i < 8; i++) {
-            int x = startX + i * (cardWidth + (i * spacingX));
-            int y = startY + cardHeight;
+            int x = startX + i * (cardWidth + spacingX);
+            int y = startY + cardHeight + spacingY;
             bloodyCards.add(new TextureRegion(texture, x, y, cardWidth, cardHeight));
         }
         backBloody = new TextureRegion(texture, 2160, 435, 230, 350);
