@@ -61,7 +61,7 @@ public class Logic {
         return mainWinner;
     }
 
-    public Player compareHands(ArrayList<Player> players) {
+    public Player getWinner(ArrayList<Player> players) {
         ArrayList<Player> sabacc = new ArrayList<>();
         ArrayList<Player> winOrder = new ArrayList<>();
 
@@ -82,5 +82,20 @@ public class Logic {
         else {
             return this.compareWinOrder(winOrder);
         }
+    }
+
+    public static Round rotation(Round round, Player winner) {
+        for (Player player : round.getPlayers()) {
+            if (player == winner) {
+                player.win();
+            }
+            else {
+                player.lose();
+                if (player.getTokens() == 0) {
+                    round.removePlayer(player);
+                }
+            }
+        }
+        return new Round(round.getPlayers());
     }
 }
