@@ -87,7 +87,7 @@ public class Main extends ApplicationAdapter {
 
         sandyDiscardImage = new Image(new TextureRegionDrawable(new Card(2, "sandy").getTextureRegion()));
         sandyDiscardImage.setSize(cardWidth, cardHeight);
-        sandyDiscardImage.setPosition(50, screenHeight / 2 - cardHeight / 2);
+        sandyDiscardImage.setPosition(500, screenHeight / 2 - cardHeight / 2);
         sandyDiscardImage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -106,7 +106,7 @@ public class Main extends ApplicationAdapter {
 
         bloodyDiscardImage = new Image(new TextureRegionDrawable(new Card(7, "bloody").getTextureRegion()));
         bloodyDiscardImage.setSize(cardWidth, cardHeight);
-        bloodyDiscardImage.setPosition(screenWidth - cardWidth - 50, screenHeight / 2 - cardHeight / 2);
+        bloodyDiscardImage.setPosition(screenWidth - cardWidth - 500, screenHeight / 2 - cardHeight / 2);
         bloodyDiscardImage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -125,7 +125,7 @@ public class Main extends ApplicationAdapter {
         // Pioche rouge
         Image bloodyDeckimage = new Image(new TextureRegionDrawable(CardAssets.backBloody));
         bloodyDeckimage.setSize(cardWidth, cardHeight);
-        bloodyDeckimage.setPosition(screenWidth - 2 * cardWidth - 450, screenHeight / 2 - cardHeight / 2);
+        bloodyDeckimage.setPosition(screenWidth - 2 * cardWidth - 650, screenHeight / 2 - cardHeight / 2);
         bloodyDeckimage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -139,7 +139,7 @@ public class Main extends ApplicationAdapter {
         // Pioche jaune
         Image sandyDeckimage = new Image(new TextureRegionDrawable(CardAssets.backSandy));
         sandyDeckimage.setSize(cardWidth, cardHeight);
-        sandyDeckimage.setPosition(50 + cardWidth + 400, screenHeight / 2 - cardHeight / 2);
+        sandyDeckimage.setPosition(50 + cardWidth + 600, screenHeight / 2 - cardHeight / 2);
         sandyDeckimage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -233,10 +233,6 @@ public class Main extends ApplicationAdapter {
                         if (playerHand.get(index).getColor().equals(doubleColor)) {
                             discardCard(index);
                         }
-                    } else {
-                        if (playerHand.size() < 3) {
-                            playCardFromHand(index);
-                        }
                     }
                 }
             });
@@ -267,17 +263,7 @@ public class Main extends ApplicationAdapter {
         image.setDrawable(new TextureRegionDrawable(topCard.getTextureRegion()));
     }
 
-    private void playCardFromHand(int index) {
-        Card card = playerHand.get(index);
-        Image played = new Image(new TextureRegionDrawable(card.getTextureRegion()));
-        played.setSize(cardWidth, cardHeight);
-        played.setPosition(
-                card.getColor().equals("sandy") ? 800 : screenWidth - cardWidth - 800,
-                250);
-        stage.addActor(played);
-        playerHand.remove(index);
-        renderPlayerHand();
-    }
+
 
     @Override
     public void render() {
