@@ -4,17 +4,17 @@ import java.util.ArrayList;
 public class Round {
     private Integer Turn;
     private ArrayList<Player> players;
-    private Deck sandDeck;
-    private Deck bloodDeck;
-    private Deck sandDiscard;
-    private Deck bloodDiscard;
+    private Deck sandyDeck;
+    private Deck bloodyDeck;
+    private Deck sandyDiscard;
+    private Deck bloodyDiscard;
 
     public Round(ArrayList<Player> players) {
         this.players = players;
-        this.sandDeck = new Deck("sand");
-        this.bloodDeck = new Deck("blood");
-        this.sandDiscard = new Deck("sand");
-        this.bloodDiscard = new Deck("blood");
+        this.sandyDeck = new Deck("sand");
+        this.bloodyDeck = new Deck("blood");
+        this.sandyDiscard = new Deck("sand");
+        this.bloodyDiscard = new Deck("blood");
         this.Turn = 0;
     }
 
@@ -24,18 +24,18 @@ public class Round {
 
     public ArrayList<Player> getPlayers() { return players; }
 
-    private void removePlayer(Player player) {
+    public void removePlayer(Player player) {
         this.players.remove(player);
     }
 
     private void initRound() {
         this.Turn = 0;
-        this.sandDeck.deckInit();
-        this.bloodDeck.deckInit();
+        this.sandyDeck.deckInit();
+        this.bloodyDeck.deckInit();
 
         for (Player player : this.players) {
-            player.setSandCard(this.sandDeck.drawCard());
-            player.setBloodCard(this.bloodDeck.drawCard());
+            player.setSandyCard(this.sandyDeck.pickCard());
+            player.setBloodyCard(this.bloodyDeck.pickCard());
         }
     }
 
@@ -46,18 +46,19 @@ public class Round {
                 if (player.getIsBot()) {
                     String result = Logic.botLogic(player);
                     if (result.equals("draw sand")) {
-                        this.sandDiscard.addCard(player.getSandCard());
-                        player.setSandCard(this.sandDeck.drawCard());
+                        this.sandyDiscard.addCard(player.getSandyCard());
+                        player.setSandyCard(this.sandyDeck.pickCard());
                     }
                     if (result.equals("draw blood")) {
-                        this.bloodDiscard.addCard(player.getBloodCard());
-                        player.setBloodCard(this.bloodDeck.drawCard());
+                        this.bloodyDiscard.addCard(player.getBloodyCard());
+                        player.setBloodyCard(this.bloodyDeck.pickCard());
                     }
                     if (result.equals("pass turn")) {
                         continue;
                     }
-                } else {
-                    // Player logic
+                }
+                else {
+                    //player logic
                 }
             }
 
