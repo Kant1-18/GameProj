@@ -46,50 +46,62 @@ public class Main extends ApplicationAdapter {
         int cardWidth = 140;
         int cardHeight = 180;
 
-        // Bottom hand
-        handImages = new Image[3];
-        for (int i = 0; i < handImages.length; i++) {
-            handImages[i] = new Image(new TextureRegionDrawable(cardRegion));
-            handImages[i].setSize(cardWidth, cardHeight);
-            handImages[i].setPosition(
-                (screenWidth - (handImages.length * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
-                50
+        Card[] hand = new Card[] {
+            new Card(1, "sandy"),
+            new Card(3, "bloody"),
+            new Card(2, "sandy")
+        };
+
+        for (int i = 0; i < hand.length; i++) {
+            Image cardImage = new Image(new TextureRegionDrawable(hand[i].getTextureRegion()));
+            cardImage.setSize(cardWidth, cardHeight);
+            cardImage.setPosition(
+            (screenWidth - (hand.length * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
+            50
             );
-            stage.addActor(handImages[i]);
+            stage.addActor(cardImage);
         }
 
-        // Top hand
-        Image[] topHandImages = new Image[3];
-        for (int i = 0; i < topHandImages.length; i++) {
-            topHandImages[i] = new Image(new TextureRegionDrawable(cardRegion));
-            topHandImages[i].setSize(cardWidth, cardHeight);
-            topHandImages[i].setPosition(
-                (screenWidth - (topHandImages.length * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
-                screenHeight - cardHeight - 50
+        Card[] topHand = new Card[] {
+            new Card(4, "sandy"),
+            new Card(5, "bloody"),
+            new Card(6, "bloody")
+        };
+
+        for (int i = 0; i < topHand.length; i++) {
+            Image cardImage = new Image(new TextureRegionDrawable(topHand[i].getTextureRegion()));
+            cardImage.setSize(cardWidth, cardHeight);
+            cardImage.setPosition(
+            (screenWidth - (topHand.length * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
+            screenHeight - cardHeight - 50
             );
-            stage.addActor(topHandImages[i]);
+            stage.addActor(cardImage);
         }
 
-        
-        Image redDiscard = new Image(new TextureRegionDrawable(cardRegion));
+        Card redDiscardCard = new Card(7, "bloody");
+        System.out.println(redDiscardCard.getValue());
+        Image redDiscard = new Image(new TextureRegionDrawable(redDiscardCard.getTextureRegion()));
         redDiscard.setSize(cardWidth, cardHeight);
         redDiscard.setPosition(screenWidth - cardWidth - 50, screenHeight / 2 - cardHeight / 2);
         stage.addActor(redDiscard);
 
-        
-        Image redDeck = new Image(new TextureRegionDrawable(cardRegion));
+        Card redDeckCard = new Card(2, "bloody");
+        System.out.println(redDeckCard.getValue());
+        System.out.println(redDeckCard.getColor());
+        Image redDeck = new Image(new TextureRegionDrawable(redDeckCard.getTextureRegion()));
         redDeck.setSize(cardWidth, cardHeight);
         redDeck.setPosition(screenWidth - 2 * cardWidth - 450, screenHeight / 2 - cardHeight / 2);
         stage.addActor(redDeck);
 
-        
-        Image yellowDiscard = new Image(new TextureRegionDrawable(cardRegion));
+        Card yellowDiscardCard = new Card(2, "sandy");
+        System.out.println(yellowDiscardCard);
+        Image yellowDiscard = new Image(new TextureRegionDrawable(yellowDiscardCard.getTextureRegion()));
         yellowDiscard.setSize(cardWidth, cardHeight);
         yellowDiscard.setPosition(50, screenHeight / 2 - cardHeight / 2);
         stage.addActor(yellowDiscard);
 
-        
-        Image yellowDeck = new Image(new TextureRegionDrawable(cardRegion));
+        Card yellowDeckCard = new Card(4, "sandy");
+        Image yellowDeck = new Image(new TextureRegionDrawable(yellowDeckCard.getTextureRegion()));
         yellowDeck.setSize(cardWidth, cardHeight);
         yellowDeck.setPosition(50 + cardWidth + 400, screenHeight / 2 - cardHeight / 2);
         stage.addActor(yellowDeck);
