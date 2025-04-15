@@ -40,7 +40,7 @@ public class Main extends ApplicationAdapter {
     private boolean mustDiscard = false;
     private String doubleColor = null;
 
-    private final int cardWidth = 140;
+    private final int cardWidth = 120;
     private final int cardHeight = 180;
     private final int screenWidth = 1920;
     private final int screenHeight = 1080;
@@ -73,16 +73,15 @@ public class Main extends ApplicationAdapter {
 
         // Main du joueur en haut (fixe)
         Card[] topHand = new Card[] {
-            new Card(4, "sandy"),
-            new Card(5, "bloody"),
+                new Card(4, "sandy"),
+                new Card(5, "bloody"),
         };
         for (int i = 0; i < topHand.length; i++) {
             Image cardImage = new Image(new TextureRegionDrawable(topHand[i].getTextureRegion()));
             cardImage.setSize(cardWidth, cardHeight);
             cardImage.setPosition(
-                (screenWidth - (topHand.length * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
-                screenHeight - cardHeight - 50
-            );
+                    (screenWidth - (topHand.length * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
+                    screenHeight - cardHeight - 50);
             stage.addActor(cardImage);
         }
 
@@ -95,7 +94,7 @@ public class Main extends ApplicationAdapter {
                 if (playerHand.size() < 3 && !discardSandy.isEmpty() && !mustDiscard) {
                     Card card = discardSandy.remove(discardSandy.size() - 1);
                     addCardToHand(card);
-        
+
                     // Mettre à jour l’image (si vide, carte par défaut ou transparente ?)
                     if (!discardSandy.isEmpty()) {
                         updateDiscardVisual(sandyDiscardImage, discardSandy.get(discardSandy.size() - 1));
@@ -104,7 +103,7 @@ public class Main extends ApplicationAdapter {
             }
         });
         stage.addActor(sandyDiscardImage);
-        
+
         bloodyDiscardImage = new Image(new TextureRegionDrawable(new Card(7, "bloody").getTextureRegion()));
         bloodyDiscardImage.setSize(cardWidth, cardHeight);
         bloodyDiscardImage.setPosition(screenWidth - cardWidth - 50, screenHeight / 2 - cardHeight / 2);
@@ -114,7 +113,7 @@ public class Main extends ApplicationAdapter {
                 if (playerHand.size() < 3 && !discardBloody.isEmpty() && !mustDiscard) {
                     Card card = discardBloody.remove(discardBloody.size() - 1);
                     addCardToHand(card);
-        
+
                     if (!discardBloody.isEmpty()) {
                         updateDiscardVisual(bloodyDiscardImage, discardBloody.get(discardBloody.size() - 1));
                     }
@@ -124,7 +123,7 @@ public class Main extends ApplicationAdapter {
         stage.addActor(bloodyDiscardImage);
 
         // Pioche rouge
-        Image bloodyDeckimage = new Image(new TextureRegionDrawable(new Card(1, "bloody").getTextureRegion()));
+        Image bloodyDeckimage = new Image(new TextureRegionDrawable(CardAssets.backBloody));
         bloodyDeckimage.setSize(cardWidth, cardHeight);
         bloodyDeckimage.setPosition(screenWidth - 2 * cardWidth - 450, screenHeight / 2 - cardHeight / 2);
         bloodyDeckimage.addListener(new ClickListener() {
@@ -138,7 +137,7 @@ public class Main extends ApplicationAdapter {
         stage.addActor(bloodyDeckimage);
 
         // Pioche jaune
-        Image sandyDeckimage = new Image(new TextureRegionDrawable(new Card(1, "sandy").getTextureRegion()));
+        Image sandyDeckimage = new Image(new TextureRegionDrawable(CardAssets.backSandy));
         sandyDeckimage.setSize(cardWidth, cardHeight);
         sandyDeckimage.setPosition(50 + cardWidth + 400, screenHeight / 2 - cardHeight / 2);
         sandyDeckimage.addListener(new ClickListener() {
@@ -189,12 +188,14 @@ public class Main extends ApplicationAdapter {
         playerHand.add(card);
         int sandyCount = 0;
         int bloodyCount = 0;
-    
+
         for (Card c : playerHand) {
-            if (c.getColor().equals("sandy")) sandyCount++;
-            if (c.getColor().equals("bloody")) bloodyCount++;
+            if (c.getColor().equals("sandy"))
+                sandyCount++;
+            if (c.getColor().equals("bloody"))
+                bloodyCount++;
         }
-    
+
         if (sandyCount > 1) {
             mustDiscard = true;
             doubleColor = "sandy";
@@ -205,7 +206,7 @@ public class Main extends ApplicationAdapter {
             mustDiscard = false;
             doubleColor = null;
         }
-    
+
         renderPlayerHand();
     }
 
@@ -214,18 +215,17 @@ public class Main extends ApplicationAdapter {
             stage.getActors().removeValue(img, true);
         }
         playerHandImages.clear();
-    
+
         for (int i = 0; i < playerHand.size(); i++) {
             Card card = playerHand.get(i);
             Image img = new Image(new TextureRegionDrawable(card.getTextureRegion()));
             img.setSize(cardWidth, cardHeight);
             img.setPosition(
-                (screenWidth - (playerHand.size() * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
-                50
-            );
-    
+                    (screenWidth - (playerHand.size() * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
+                    50);
+
             final int index = i;
-    
+
             img.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -240,7 +240,7 @@ public class Main extends ApplicationAdapter {
                     }
                 }
             });
-    
+
             stage.addActor(img);
             playerHandImages.add(img);
         }
@@ -248,7 +248,7 @@ public class Main extends ApplicationAdapter {
 
     private void discardCard(int index) {
         Card card = playerHand.get(index);
-    
+
         if (card.getColor().equals("sandy")) {
             discardSandy.add(card);
             updateDiscardVisual(sandyDiscardImage, card);
@@ -256,7 +256,7 @@ public class Main extends ApplicationAdapter {
             discardBloody.add(card);
             updateDiscardVisual(bloodyDiscardImage, card);
         }
-    
+
         playerHand.remove(index);
         mustDiscard = false;
         doubleColor = null;
@@ -266,16 +266,14 @@ public class Main extends ApplicationAdapter {
     private void updateDiscardVisual(Image image, Card topCard) {
         image.setDrawable(new TextureRegionDrawable(topCard.getTextureRegion()));
     }
-    
 
     private void playCardFromHand(int index) {
         Card card = playerHand.get(index);
         Image played = new Image(new TextureRegionDrawable(card.getTextureRegion()));
         played.setSize(cardWidth, cardHeight);
         played.setPosition(
-            card.getColor().equals("sandy") ? 200 : screenWidth - cardWidth - 200,
-            250
-        );
+                card.getColor().equals("sandy") ? 800 : screenWidth - cardWidth - 800,
+                250);
         stage.addActor(played);
         playerHand.remove(index);
         renderPlayerHand();
