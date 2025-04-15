@@ -45,24 +45,26 @@ public class Round {
             for (Player player : this.players) {
                 if (player.getIsBot()) {
                     String result = Logic.botLogic(player);
-                    if (result.equals("draw sand")) {
-                        this.sandyDiscard.addCard(player.getSandyCard());
-                        player.setSandyCard(this.sandyDeck.pickCard());
-                    }
-                    if (result.equals("draw blood")) {
-                        this.bloodyDiscard.addCard(player.getBloodyCard());
-                        player.setBloodyCard(this.bloodyDeck.pickCard());
-                    }
-                    if (result.equals("pass turn")) {
-                        continue;
+                    switch (result) {
+                        case "draw sand":
+                            this.sandyDiscard.addCard(player.getSandyCard());
+                            player.setSandyCard(this.sandyDeck.pickCard());
+                            break;
+                        case "draw blood":
+                            this.bloodyDiscard.addCard(player.getBloodyCard());
+                            player.setBloodyCard(this.bloodyDeck.pickCard());
+                            break;
+                        case "pass turn":
+                            continue;
                     }
                 }
                 else {
-                    //player logic
+                    break;
                 }
             }
 
             this.incrementTurn();
+            break;
         }
     }
 }

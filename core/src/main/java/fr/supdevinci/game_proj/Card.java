@@ -8,29 +8,9 @@ public class Card {
 
     private static boolean assetLoaded = false;
 
-    public Card(Integer value, String color) {
-        if (!assetLoaded) {
-            CardAssets.load();
-            assetLoaded = true;
-        }
-    
-        this.value = value;
-        this.color = color;
-    
-        if (value == null) {
-            throw new IllegalArgumentException("Card value cannot be null");
-        }
-    
-        if (color.equals("sandy")) {
-            this.textureRegion = CardAssets.sandyCards.get(value - 1);
-        } else if (color.equals("bloody")) {
-            this.textureRegion = CardAssets.bloodyCards.get(value - 1);
-        } else {
-            throw new IllegalArgumentException("Invalid card color: " + color);
-        }
-    }
-
     public Integer getValue() { return value; }
+
+    public String getColor() { return color; }
 
     public void setValue(Integer value)
     {
@@ -40,13 +20,27 @@ public class Card {
         this.value = value;
     }
 
-    public String getColor() { return color; }
-
     public void setColor(String color) {
         if (color != "sandy" || color != "bloody") {
             throw new IllegalArgumentException("Color must be either 'sandy' or 'bloody'");
         }
         this.color = color;
     }
-    public TextureRegion getTextureRegion() { return textureRegion; }
+
+    public Card(Integer value, String color) {
+        this.setValue(value);
+        this.setColor(color);
+
+        if (!assetLoaded) {
+            CardAssets.load();
+            assetLoaded = true;
+        }
+
+        if (color.equals("sandy")) {
+            this.textureRegion = CardAssets.sandyCards.get(value - 1);
+        }
+        if (color.equals("bloody")) {
+            this.textureRegion = CardAssets.bloodyCards.get(value - 1);
+        }
+    }
 }
