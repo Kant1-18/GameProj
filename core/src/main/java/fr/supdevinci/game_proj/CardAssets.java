@@ -16,12 +16,12 @@ public class CardAssets {
 
     public static void load() {
         texture = new Texture(Gdx.files.internal("Cards.png"));
-        int cardWidth = 140;
-        int cardHeight = 180;
-        int startX = 10;
-        int startY = 15;
-        int spacingX = 15;
-        int spacingY = 20;
+        Integer cardWidth = 230;
+        Integer cardHeight = 350;
+        Integer startX = 30;
+        Integer startY = 55;
+        Integer spacingX = 30;
+        Integer spacingY = 20;
 
         sandyCards = new ArrayList<>();
         bloodyCards = new ArrayList<>();
@@ -47,11 +47,11 @@ public class CardAssets {
         texture = new Texture(Gdx.files.internal("Cards.png"));
         cards = new ArrayList<>();
 
-        Integer cardWidth = 130;
-        Integer cardHeight = 180;
-        Integer startX = 10;
-        Integer startY = 15;
-        Integer spacingX = 15;
+        Integer cardWidth = 210;
+        Integer cardHeight = 320;
+        Integer startX = 20;
+        Integer startY = 30;
+        Integer spacingX = 20;
         Integer spacingY = 20;
 
         // Sandy cards
@@ -81,14 +81,14 @@ public class CardAssets {
 
     private void initSandCards() {
         sandyCards = new ArrayList<>();
-        for (Integer i = 0; i <=7 ; i++) {
+        for (Integer i = 0; i <= 7; i++) {
             sandyCards.add(cards.get(i));
         }
     }
 
     private void initBloodCards() {
         bloodyCards = new ArrayList<>();
-        for (Integer i = 8; i <=15 ; i++) {
+        for (Integer i = 8; i <= 15; i++) {
             bloodyCards.add(cards.get(i));
         }
     }
