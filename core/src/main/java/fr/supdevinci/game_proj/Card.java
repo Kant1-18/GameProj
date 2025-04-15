@@ -6,9 +6,16 @@ public class Card {
     private String color;
     private TextureRegion textureRegion;
 
+    private static boolean assetLoaded = false;
+
     public Card(Integer value, String color) {
         this.value = value;
         this.color = color;
+
+        if (!assetLoaded) {
+            CardAssets.load();
+            assetLoaded = true;
+        }
 
         if (color.equals("sandy")) {
             this.textureRegion = CardAssets.sandyCards.get(value - 1);
