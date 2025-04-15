@@ -43,4 +43,5 @@ public class Card {
         }
         this.color = color;
     }
+    public TextureRegion getTextureRegion() { return textureRegion; }
 }
