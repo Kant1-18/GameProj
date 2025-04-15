@@ -63,4 +63,23 @@ public class Player {
         this.tokens += this.stake;
         this.stake = 0;
     }
+
+    public Integer handValue(){
+        Integer sandyCardValue = this.sandyCard.getValue();
+        Integer bloodyCardValue = this.bloodyCard.getValue();
+
+        if (sandyCardValue == 7){ sandyCardValue = Logic.roleDice(); }
+        if (bloodyCardValue == 7){ bloodyCardValue = Logic.roleDice(); }
+
+        if (sandyCardValue != 0 && bloodyCardValue != 0){
+            if (sandyCardValue > bloodyCardValue){
+                return sandyCardValue - bloodyCardValue;
+            }
+            if (sandyCardValue < bloodyCardValue){
+                return bloodyCardValue - sandyCardValue;
+            }
+        }
+
+        return 0;
+    }
 }
