@@ -13,7 +13,7 @@ public class Deck {
 
     public ArrayList<Card> getCards() { return cards; }
 
-    public Card drawCard() {
+    public Card pickCard() {
         Card card = this.cards.get(0);
         this.cards.remove(0);
         return card;

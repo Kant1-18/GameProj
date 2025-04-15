@@ -34,8 +34,8 @@ public class Round {
         this.bloodDeck.deckInit();
 
         for (Player player : this.players) {
-            player.setSandCard(this.sandDeck.drawCard());
-            player.setBloodCard(this.bloodDeck.drawCard());
+            player.setSandCard(this.sandDeck.pickCard());
+            player.setBloodCard(this.bloodDeck.pickCard());
         }
     }
 
@@ -47,11 +47,11 @@ public class Round {
                     String result = Logic.botLogic(player);
                     if (result.equals("draw sand")) {
                         this.sandDiscard.addCard(player.getSandCard());
-                        player.setSandCard(this.sandDeck.drawCard());
+                        player.setSandCard(this.sandDeck.pickCard());
                     }
                     if (result.equals("draw blood")) {
                         this.bloodDiscard.addCard(player.getBloodCard());
-                        player.setBloodCard(this.bloodDeck.drawCard());
+                        player.setBloodCard(this.bloodDeck.pickCard());
                     }
                     if (result.equals("pass turn")) {
                         continue;
