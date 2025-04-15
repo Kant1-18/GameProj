@@ -18,24 +18,24 @@ public class CardAssets {
         texture = new Texture(Gdx.files.internal("Cards.png"));
         cards = new ArrayList<>();
 
-        int cardWidth = 130;
-        int cardHeight = 180;
-        int startX = 10;
-        int startY = 15;
-        int spacingX = 15;
-        int spacingY = 20;
+        Integer cardWidth = 130;
+        Integer cardHeight = 180;
+        Integer startX = 10;
+        Integer startY = 15;
+        Integer spacingX = 15;
+        Integer spacingY = 20;
 
         // Sandy cards
-        for (int i = 0; i < 8; i++) {
-            int x = startX + i * (cardWidth + spacingX);
-            int y = startY;
+        for (Integer i = 0; i < 8; i++) {
+            Integer x = startX + i * (cardWidth + spacingX);
+            Integer y = startY;
             cards.add(new TextureRegion(texture, x, y, cardWidth, cardHeight));
         }
 
         // Bloody Cards
-        for (int i = 0; i < 8; i++) {
-            int x = startX + i * (cardWidth + spacingX);
-            int y = startY + cardHeight + spacingY;
+        for (Integer i = 0; i < 8; i++) {
+            Integer x = startX + i * (cardWidth + spacingX);
+            Integer y = startY + cardHeight + spacingY;
             cards.add(new TextureRegion(texture, x, y, cardWidth, cardHeight));
         }
 
@@ -52,14 +52,14 @@ public class CardAssets {
 
     private void initSandCards() {
         sandCards = new ArrayList<>();
-        for (int i = 0; i <=7 ; i++) {
+        for (Integer i = 0; i <=7 ; i++) {
             sandCards.add(cards.get(i));
         }
     }
 
     private void initBloodCards() {
         bloodCards = new ArrayList<>();
-        for (int i = 8; i <=15 ; i++) {
+        for (Integer i = 8; i <=15 ; i++) {
             bloodCards.add(cards.get(i));
         }
     }
