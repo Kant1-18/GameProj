@@ -1,95 +1,55 @@
 package fr.supdevinci.game_proj;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+
 public class CardAssets {
 
-    public ArrayList<TextureRegion> cards;
-    public static TextureRegion token;
     public static Texture texture;
     public static ArrayList<TextureRegion> sandyCards;
     public static ArrayList<TextureRegion> bloodyCards;
+    public static TextureRegion backBloody;
+    public static TextureRegion backSandy;
+    public static TextureRegion token;
 
     public static void load() {
         texture = new Texture(Gdx.files.internal("Cards.png"));
-        Integer cardWidth = 230;
-        Integer cardHeight = 350;
-        Integer startX = 30;
-        Integer startY = 55;
-        Integer spacingX = 30;
-        Integer spacingY = 20;
+
+        int cardWidth = 230;
+        int cardHeight = 330;
+        int startX = 30;
+        int startY = 55;
+        int spacingX = 30;
 
         sandyCards = new ArrayList<>();
         bloodyCards = new ArrayList<>();
 
-        // Sand cards (ligne 1)
+        // Sandy cards (ligne 1)
         for (int i = 0; i < 8; i++) {
-            int x = startX + i * (cardWidth + spacingX);
+            int x = startX + i * (cardWidth + (i * spacingX));
             int y = startY;
             sandyCards.add(new TextureRegion(texture, x, y, cardWidth, cardHeight));
         }
+        backSandy = new TextureRegion(texture, 2160, 55, 230, 350);
 
-        // Blood cards (ligne 2)
+        // Bloody cards (ligne 2)
         for (int i = 0; i < 8; i++) {
-            int x = startX + i * (cardWidth + spacingX);
-            int y = startY + cardHeight + spacingY;
+            int x = startX + i * (cardWidth + (i * spacingX));
+            int y = startY + cardHeight;
             bloodyCards.add(new TextureRegion(texture, x, y, cardWidth, cardHeight));
         }
+        backBloody = new TextureRegion(texture, 2160, 435, 230, 350);
 
+        // Jeton (position fixe)
         token = new TextureRegion(texture, 1785, 1220, 72, 72);
-    }
-
-    public CardAssets() {
-        texture = new Texture(Gdx.files.internal("Cards.png"));
-        cards = new ArrayList<>();
-
-        Integer cardWidth = 210;
-        Integer cardHeight = 320;
-        Integer startX = 20;
-        Integer startY = 30;
-        Integer spacingX = 20;
-        Integer spacingY = 20;
-
-        // Sandy cards
-        for (Integer i = 0; i < 8; i++) {
-            Integer x = startX + i * (cardWidth + spacingX);
-            Integer y = startY;
-            cards.add(new TextureRegion(texture, x, y, cardWidth, cardHeight));
-        }
-
-        // Bloody Cards
-        for (Integer i = 0; i < 8; i++) {
-            Integer x = startX + i * (cardWidth + spacingX);
-            Integer y = startY + cardHeight + spacingY;
-            cards.add(new TextureRegion(texture, x, y, cardWidth, cardHeight));
-        }
-
-        token = new TextureRegion(texture, 1785, 1220, 72, 72);
-
-        // Initialize the sand and blood cards
-        initSandCards();
-        initBloodCards();
     }
 
     public static void dispose() {
-        texture.dispose();
-    }
-
-    private void initSandCards() {
-        sandyCards = new ArrayList<>();
-        for (Integer i = 0; i <= 7; i++) {
-            sandyCards.add(cards.get(i));
-        }
-    }
-
-    private void initBloodCards() {
-        bloodyCards = new ArrayList<>();
-        for (Integer i = 8; i <= 15; i++) {
-            bloodyCards.add(cards.get(i));
+        if (texture != null) {
+            texture.dispose();
         }
     }
 }
