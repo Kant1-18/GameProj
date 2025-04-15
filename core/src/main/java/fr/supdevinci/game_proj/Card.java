@@ -8,6 +8,27 @@ public class Card {
 
     private static boolean assetLoaded = false;
 
+    public Integer getValue() { return value; }
+
+    public String getColor() { return color; }
+
+    public TextureRegion getTextureRegion() { return textureRegion; }
+
+    public void setValue(Integer value)
+    {
+        if (value <= 0 || value >= 7) {
+            throw new IllegalArgumentException("Value must be between 0 and 7");
+        }
+        this.value = value;
+    }
+
+    public void setColor(String color) {
+        if (color != "sandy" && color != "bloody") {
+            throw new IllegalArgumentException("Color must be either 'sandy' or 'bloody'");
+        }
+        this.color = color;
+    }
+
     public Card(Integer value, String color) {
         this.value = value;
         this.color = color;
@@ -24,24 +45,4 @@ public class Card {
             this.textureRegion = CardAssets.bloodyCards.get(value - 1);
         }
     }
-
-    public Integer getValue() { return value; }
-
-    public void setValue(Integer value)
-    {
-        if (value <= 0 || value >= 7) {
-            throw new IllegalArgumentException("Value must be between 0 and 7");
-        }
-        this.value = value;
-    }
-
-    public String getColor() { return color; }
-
-    public void setColor(String color) {
-        if (color != "sandy" || color != "bloody") {
-            throw new IllegalArgumentException("Color must be either 'sandy' or 'bloody'");
-        }
-        this.color = color;
-    }
-    public TextureRegion getTextureRegion() { return textureRegion; }
 }

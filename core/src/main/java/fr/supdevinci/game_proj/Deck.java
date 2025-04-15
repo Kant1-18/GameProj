@@ -34,7 +34,7 @@ public class Deck {
     }
 
     public void deckInit() {
-        this.cards.add(new Card(null, color));
+        
         for (int i = 1; i <= 7; i++) {
             this.cards.add(new Card(i, this.color));
         }
