@@ -5,16 +5,16 @@ public class Player {
     private String name;
     private Integer tokens;
     private Integer stake;
-    private Card sandCard;
-    private Card bloodCard;
+    private Card sandyCard;
+    private Card bloodyCard;
 
-    public Player(Boolean isBot, String name, Integer tokens, Integer stake, Card sandCard, Card bloodCard){
+    public Player(Boolean isBot, String name, Integer tokens, Integer stake, Card sandyCard, Card bloodyCard){
         this.isBot = isBot;
         this.name = name;
         this.tokens = tokens;
         this.stake = stake;
-        this.sandCard = sandCard;
-        this.bloodCard = bloodCard;
+        this.sandyCard = sandyCard;
+        this.bloodyCard = bloodyCard;
     }
 
     public Boolean getIsBot(){ return this.isBot; }
@@ -25,13 +25,23 @@ public class Player {
 
     public Integer getStake(){ return this.stake; }
 
-    public Card getSandCard(){ return this.sandCard; }
+    public Card getSandyCard(){ return this.sandyCard; }
 
-    public Card getBloodCard(){ return this.bloodCard; }
+    public Card getBloodyCard(){ return this.bloodyCard; }
 
-    public void setSandCard(Card sandCard){ this.sandCard = sandCard; }
+    public void setSandyCard(Card sandyCard) {
+        if (sandyCard.getColor() != "sandy") {
+            throw new IllegalArgumentException("Card must be of color 'sandy'");
+        }
+        this.sandyCard = sandyCard;
+    }
 
-    public void setBloodCard(Card bloodCard){ this.bloodCard = bloodCard; }
+    public void setBloodyCard(Card bloodyCard) {
+        if (bloodyCard.getColor() != "bloody") {
+            throw new IllegalArgumentException("Card must be of color 'bloody'");
+        }
+        this.bloodyCard = bloodyCard;
+    }
 
     public Boolean bet(){
         if (tokens > 0){

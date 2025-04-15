@@ -5,18 +5,18 @@ package fr.supdevinci.game_proj;
 public class Logic {
 
     public static String botLogic(Player player) {
-        Integer sandCard = player.getSandCard().getValue();
-        Integer bloodCard = player.getBloodCard().getValue();
+        Integer sandyCard = player.getSandyCard().getValue();
+        Integer bloodyCard = player.getBloodyCard().getValue();
         Integer amountTokens = player.getTokens();
 
         if (amountTokens > 0) {
-            if (sandCard > bloodCard) {
-                if (sandCard - bloodCard > 3) {
+            if (sandyCard > bloodyCard) {
+                if (sandyCard - bloodyCard > 3) {
                     return "draw sand";
                 }
             }
-            if (sandCard < bloodCard) {
-                if (bloodCard - sandCard > 3) {
+            if (sandyCard < bloodyCard) {
+                if (bloodyCard - sandyCard > 3) {
                     return "draw blood";
                 }
             }

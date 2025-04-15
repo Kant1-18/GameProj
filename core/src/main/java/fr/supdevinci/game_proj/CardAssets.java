@@ -11,8 +11,8 @@ public class CardAssets {
     public ArrayList<TextureRegion> cards;
     public TextureRegion token;
     public Texture texture;
-    public static ArrayList<TextureRegion> sandCards;
-    public static ArrayList<TextureRegion> bloodCards;
+    public static ArrayList<TextureRegion> sandyCards;
+    public static ArrayList<TextureRegion> bloodyCards;
 
     public CardAssets() {
         texture = new Texture(Gdx.files.internal("Cards.png"));
@@ -51,16 +51,16 @@ public class CardAssets {
     }
 
     private void initSandCards() {
-        sandCards = new ArrayList<>();
+        sandyCards = new ArrayList<>();
         for (Integer i = 0; i <=7 ; i++) {
-            sandCards.add(cards.get(i));
+            sandyCards.add(cards.get(i));
         }
     }
 
     private void initBloodCards() {
-        bloodCards = new ArrayList<>();
+        bloodyCards = new ArrayList<>();
         for (Integer i = 8; i <=15 ; i++) {
-            bloodCards.add(cards.get(i));
+            bloodyCards.add(cards.get(i));
         }
     }
 }
