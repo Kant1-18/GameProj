@@ -75,7 +75,7 @@ public class CardAssets {
         initBloodCards();
     }
 
-    public void dispose() {
+    public static void dispose() {
         texture.dispose();
     }
 

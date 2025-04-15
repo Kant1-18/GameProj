@@ -9,19 +9,24 @@ public class Card {
     private static boolean assetLoaded = false;
 
     public Card(Integer value, String color) {
-        this.value = value;
-        this.color = color;
-
         if (!assetLoaded) {
             CardAssets.load();
             assetLoaded = true;
         }
-
+    
+        this.value = value;
+        this.color = color;
+    
+        if (value == null) {
+            throw new IllegalArgumentException("Card value cannot be null");
+        }
+    
         if (color.equals("sandy")) {
             this.textureRegion = CardAssets.sandyCards.get(value - 1);
-        }
-        if (color.equals("bloody")) {
+        } else if (color.equals("bloody")) {
             this.textureRegion = CardAssets.bloodyCards.get(value - 1);
+        } else {
+            throw new IllegalArgumentException("Invalid card color: " + color);
         }
     }
 
