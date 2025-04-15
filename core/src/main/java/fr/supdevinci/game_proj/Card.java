@@ -12,6 +12,8 @@ public class Card {
 
     public String getColor() { return color; }
 
+    public TextureRegion getTextureRegion() { return textureRegion; }
+
     public void setValue(Integer value)
     {
         if (value <= 0 || value >= 7) {
