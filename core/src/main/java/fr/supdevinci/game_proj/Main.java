@@ -273,7 +273,7 @@ public class Main extends ApplicationAdapter {
         Image played = new Image(new TextureRegionDrawable(card.getTextureRegion()));
         played.setSize(cardWidth, cardHeight);
         played.setPosition(
-            card.getColor().equals("sandy") ? 200 : screenWidth - cardWidth - 200,
+            card.getColor().equals("sandy") ? 800 : screenWidth - cardWidth - 800,
             250
         );
         stage.addActor(played);
