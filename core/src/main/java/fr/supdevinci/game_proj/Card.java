@@ -14,24 +14,24 @@ public class Card {
 
     public TextureRegion getTextureRegion() { return textureRegion; }
 
-    public void setValue(Integer value)
+    public void checkValue(Integer value)
     {
-        if (value <= 0 || value >= 7) {
+        if (value <= 0 && value >= 7) {
             throw new IllegalArgumentException("Value must be between 0 and 7");
         }
-        this.value = value;
     }
 
-    public void setColor(String color) {
-        if (color != "sandy" || color != "bloody") {
+    public void checkColor(String color) {
+        if (color != "sandy" && color != "bloody") {
             throw new IllegalArgumentException("Color must be either 'sandy' or 'bloody'");
         }
-        this.color = color;
     }
 
     public Card(Integer value, String color) {
-        this.setValue(value);
-        this.setColor(color);
+        this.checkValue(value);
+        this.checkColor(color);
+        this.value = value;
+        this.color = color;
 
         if (!assetLoaded) {
             CardAssets.load();
