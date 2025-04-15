@@ -31,6 +31,11 @@ public class Main extends ApplicationAdapter {
     private Deck sandyDeck;
     private Deck bloodyDeck;
 
+    private Player player1;
+
+    
+    private Label tokensLabel;
+
     private ArrayList<Card> discardSandy = new ArrayList<>();
     private ArrayList<Card> discardBloody = new ArrayList<>();
 
@@ -56,6 +61,8 @@ public class Main extends ApplicationAdapter {
         TextButtonStyle buttonStyle = new TextButtonStyle();
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.BLACK;
+        player1 = new Player(false, "Joueur", 5, 0, null, null);
+        tokensLabel = new Label("Jetons : " + player1.getTokens(), labelStyle);
 
         // Initialisation des decks
         sandyDeck = new Deck("sandy");
@@ -71,19 +78,21 @@ public class Main extends ApplicationAdapter {
             addCardToHand(bloodyDeck.pickCard());
         }
 
-        // Main du joueur en haut (fixe)
-        Card[] topHand = new Card[] {
-                new Card(4, "sandy"),
-                new Card(5, "bloody"),
-        };
-        for (int i = 0; i < topHand.length; i++) {
-            Image cardImage = new Image(new TextureRegionDrawable(topHand[i].getTextureRegion()));
-            cardImage.setSize(cardWidth, cardHeight);
-            cardImage.setPosition(
-                    (screenWidth - (topHand.length * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
-                    screenHeight - cardHeight - 50);
-            stage.addActor(cardImage);
-        }
+        Image sandyBack = new Image(new TextureRegionDrawable(CardAssets.backSandy));
+        sandyBack.setSize(cardWidth, cardHeight);
+        sandyBack.setPosition(
+                (screenWidth - 2 * (cardWidth + 20)) / 2,
+                screenHeight - cardHeight - 50
+        );
+        stage.addActor(sandyBack);
+
+        Image bloodyBack = new Image(new TextureRegionDrawable(CardAssets.backBloody));
+        bloodyBack.setSize(cardWidth, cardHeight);
+        bloodyBack.setPosition(
+                (screenWidth - 2 * (cardWidth + 20)) / 2 + cardWidth + 20,
+                screenHeight - cardHeight - 50
+        );
+        stage.addActor(bloodyBack);
 
         sandyDiscardImage = new Image(new TextureRegionDrawable(new Card(2, "sandy").getTextureRegion()));
         sandyDiscardImage.setSize(cardWidth, cardHeight);
@@ -91,11 +100,10 @@ public class Main extends ApplicationAdapter {
         sandyDiscardImage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (playerHand.size() < 3 && !discardSandy.isEmpty() && !mustDiscard) {
+                if (playerHand.size() < 3 && !discardSandy.isEmpty() && !mustDiscard && player1.bet()) {
                     Card card = discardSandy.remove(discardSandy.size() - 1);
                     addCardToHand(card);
-
-                    // Mettre à jour l’image (si vide, carte par défaut ou transparente ?)
+                    updateTokenDisplay();
                     if (!discardSandy.isEmpty()) {
                         updateDiscardVisual(sandyDiscardImage, discardSandy.get(discardSandy.size() - 1));
                     }
@@ -110,14 +118,16 @@ public class Main extends ApplicationAdapter {
         bloodyDiscardImage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (playerHand.size() < 3 && !discardBloody.isEmpty() && !mustDiscard) {
+                if (playerHand.size() < 3 && !discardBloody.isEmpty() && !mustDiscard && player1.bet()) {
                     Card card = discardBloody.remove(discardBloody.size() - 1);
                     addCardToHand(card);
-
+                    updateTokenDisplay();
+                    System.out.println("token" + player1.getTokens());
                     if (!discardBloody.isEmpty()) {
                         updateDiscardVisual(bloodyDiscardImage, discardBloody.get(discardBloody.size() - 1));
                     }
                 }
+                
             }
         });
         stage.addActor(bloodyDiscardImage);
@@ -129,8 +139,9 @@ public class Main extends ApplicationAdapter {
         bloodyDeckimage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (playerHand.size() < 3 && !mustDiscard) {
+                if (playerHand.size() < 3 && !mustDiscard && player1.bet()) {
                     addCardToHand(bloodyDeck.pickCard());
+                    updateTokenDisplay();
                 }
             }
         });
@@ -143,8 +154,9 @@ public class Main extends ApplicationAdapter {
         sandyDeckimage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (playerHand.size() < 3 && !mustDiscard) {
+                if (playerHand.size() < 3 && !mustDiscard && player1.bet()) {
                     addCardToHand(sandyDeck.pickCard());
+                    updateTokenDisplay();
                 }
             }
         });
@@ -158,11 +170,14 @@ public class Main extends ApplicationAdapter {
         Label manchesLabel = new Label("Manches : 3", labelStyle);
         Label victoiresLabel = new Label("Victoires : 1", labelStyle);
         Label tourLabel = new Label("Tour : 1", labelStyle);
+        
 
         manchesLabel.setFontScale(2.0f);
         victoiresLabel.setFontScale(2.0f);
         tourLabel.setFontScale(2.0f);
+        tokensLabel.setFontScale(2.0f);
 
+        scoreTable.add(tokensLabel).left().row();
         scoreTable.add(tourLabel).left().row();
         scoreTable.add(manchesLabel).left().row();
         scoreTable.add(victoiresLabel).left();
@@ -263,7 +278,9 @@ public class Main extends ApplicationAdapter {
         image.setDrawable(new TextureRegionDrawable(topCard.getTextureRegion()));
     }
 
-
+    private void updateTokenDisplay() {
+        tokensLabel.setText("Jetons : " + player1.getTokens());
+    }
 
     @Override
     public void render() {
