@@ -31,6 +31,12 @@ public class Main extends ApplicationAdapter {
     private Deck sandyDeck;
     private Deck bloodyDeck;
 
+    private ArrayList<Card> discardSandy = new ArrayList<>();
+    private ArrayList<Card> discardBloody = new ArrayList<>();
+
+    private Image sandyDiscardImage;
+    private Image bloodyDiscardImage;
+
     private boolean mustDiscard = false;
     private String doubleColor = null;
 
@@ -80,22 +86,48 @@ public class Main extends ApplicationAdapter {
             stage.addActor(cardImage);
         }
 
-        // Discard piles
-        Image redDiscard = new Image(new TextureRegionDrawable(new Card(7, "bloody").getTextureRegion()));
-        redDiscard.setSize(cardWidth, cardHeight);
-        redDiscard.setPosition(screenWidth - cardWidth - 50, screenHeight / 2 - cardHeight / 2);
-        stage.addActor(redDiscard);
-
-        Image yellowDiscard = new Image(new TextureRegionDrawable(new Card(2, "sandy").getTextureRegion()));
-        yellowDiscard.setSize(cardWidth, cardHeight);
-        yellowDiscard.setPosition(50, screenHeight / 2 - cardHeight / 2);
-        stage.addActor(yellowDiscard);
+        sandyDiscardImage = new Image(new TextureRegionDrawable(new Card(2, "sandy").getTextureRegion()));
+        sandyDiscardImage.setSize(cardWidth, cardHeight);
+        sandyDiscardImage.setPosition(50, screenHeight / 2 - cardHeight / 2);
+        sandyDiscardImage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (playerHand.size() < 3 && !discardSandy.isEmpty() && !mustDiscard) {
+                    Card card = discardSandy.remove(discardSandy.size() - 1);
+                    addCardToHand(card);
+        
+                    // Mettre à jour l’image (si vide, carte par défaut ou transparente ?)
+                    if (!discardSandy.isEmpty()) {
+                        updateDiscardVisual(sandyDiscardImage, discardSandy.get(discardSandy.size() - 1));
+                    }
+                }
+            }
+        });
+        stage.addActor(sandyDiscardImage);
+        
+        bloodyDiscardImage = new Image(new TextureRegionDrawable(new Card(7, "bloody").getTextureRegion()));
+        bloodyDiscardImage.setSize(cardWidth, cardHeight);
+        bloodyDiscardImage.setPosition(screenWidth - cardWidth - 50, screenHeight / 2 - cardHeight / 2);
+        bloodyDiscardImage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (playerHand.size() < 3 && !discardBloody.isEmpty() && !mustDiscard) {
+                    Card card = discardBloody.remove(discardBloody.size() - 1);
+                    addCardToHand(card);
+        
+                    if (!discardBloody.isEmpty()) {
+                        updateDiscardVisual(bloodyDiscardImage, discardBloody.get(discardBloody.size() - 1));
+                    }
+                }
+            }
+        });
+        stage.addActor(bloodyDiscardImage);
 
         // Pioche rouge
-        Image redDeck = new Image(new TextureRegionDrawable(new Card(1, "bloody").getTextureRegion()));
-        redDeck.setSize(cardWidth, cardHeight);
-        redDeck.setPosition(screenWidth - 2 * cardWidth - 450, screenHeight / 2 - cardHeight / 2);
-        redDeck.addListener(new ClickListener() {
+        Image bloodyDeckimage = new Image(new TextureRegionDrawable(new Card(1, "bloody").getTextureRegion()));
+        bloodyDeckimage.setSize(cardWidth, cardHeight);
+        bloodyDeckimage.setPosition(screenWidth - 2 * cardWidth - 450, screenHeight / 2 - cardHeight / 2);
+        bloodyDeckimage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (playerHand.size() < 3 && !mustDiscard) {
@@ -103,13 +135,13 @@ public class Main extends ApplicationAdapter {
                 }
             }
         });
-        stage.addActor(redDeck);
+        stage.addActor(bloodyDeckimage);
 
         // Pioche jaune
-        Image yellowDeck = new Image(new TextureRegionDrawable(new Card(1, "sandy").getTextureRegion()));
-        yellowDeck.setSize(cardWidth, cardHeight);
-        yellowDeck.setPosition(50 + cardWidth + 400, screenHeight / 2 - cardHeight / 2);
-        yellowDeck.addListener(new ClickListener() {
+        Image sandyDeckimage = new Image(new TextureRegionDrawable(new Card(1, "sandy").getTextureRegion()));
+        sandyDeckimage.setSize(cardWidth, cardHeight);
+        sandyDeckimage.setPosition(50 + cardWidth + 400, screenHeight / 2 - cardHeight / 2);
+        sandyDeckimage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (playerHand.size() < 3 && !mustDiscard) {
@@ -117,7 +149,7 @@ public class Main extends ApplicationAdapter {
                 }
             }
         });
-        stage.addActor(yellowDeck);
+        stage.addActor(sandyDeckimage);
 
         // Tableau de score
         Table scoreTable = new Table();
@@ -126,10 +158,13 @@ public class Main extends ApplicationAdapter {
 
         Label manchesLabel = new Label("Manches : 3", labelStyle);
         Label victoiresLabel = new Label("Victoires : 1", labelStyle);
+        Label tourLabel = new Label("Tour : 1", labelStyle);
 
         manchesLabel.setFontScale(2.0f);
         victoiresLabel.setFontScale(2.0f);
+        tourLabel.setFontScale(2.0f);
 
+        scoreTable.add(tourLabel).left().row();
         scoreTable.add(manchesLabel).left().row();
         scoreTable.add(victoiresLabel).left();
         stage.addActor(scoreTable);
@@ -213,18 +248,23 @@ public class Main extends ApplicationAdapter {
 
     private void discardCard(int index) {
         Card card = playerHand.get(index);
-        Image discarded = new Image(new TextureRegionDrawable(card.getTextureRegion()));
-        discarded.setSize(cardWidth, cardHeight);
-        discarded.setPosition(
-            card.getColor().equals("sandy") ? 50 : screenWidth - cardWidth - 50,
-            screenHeight / 2 - cardHeight / 2
-        );
-        stage.addActor(discarded);
+    
+        if (card.getColor().equals("sandy")) {
+            discardSandy.add(card);
+            updateDiscardVisual(sandyDiscardImage, card);
+        } else {
+            discardBloody.add(card);
+            updateDiscardVisual(bloodyDiscardImage, card);
+        }
     
         playerHand.remove(index);
         mustDiscard = false;
         doubleColor = null;
         renderPlayerHand();
+    }
+
+    private void updateDiscardVisual(Image image, Card topCard) {
+        image.setDrawable(new TextureRegionDrawable(topCard.getTextureRegion()));
     }
     
 
