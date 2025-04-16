@@ -11,12 +11,12 @@ public class Logic {
         if (amountTokens > 0) {
             if (sandyCard > bloodyCard) {
                 if (sandyCard - bloodyCard > 3) {
-                    return "draw sand";
+                    return "draw sandy";
                 }
             }
             if (sandyCard < bloodyCard) {
                 if (bloodyCard - sandyCard > 3) {
-                    return "draw blood";
+                    return "draw bloody";
                 }
             }
         }
