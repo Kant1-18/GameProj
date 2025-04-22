@@ -20,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -32,9 +34,22 @@ public class Main extends ApplicationAdapter {
     private Deck bloodyDeck;
 
     private Player player1;
+    private Player bot1;
+    private Player bot2;
+    private Player bot3;
 
+    private Round round;
+
+    private int manche = 1;
+    private int tourDansManche = 1;
+    private int currentPlayerIndex = 0;
+    private HashMap<String, Integer> victoires = new HashMap<>();
+    private ArrayList<Player> players;
     
     private Label tokensLabel;
+    private Label manchesLabel;
+    private Label tourLabel;
+    private boolean gameEnded = false;
 
     private ArrayList<Card> discardSandy = new ArrayList<>();
     private ArrayList<Card> discardBloody = new ArrayList<>();
@@ -61,16 +76,26 @@ public class Main extends ApplicationAdapter {
         TextButtonStyle buttonStyle = new TextButtonStyle();
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.BLACK;
-        player1 = new Player(false, "Joueur", 5, 0, null, null);
-        tokensLabel = new Label("Jetons : " + player1.getTokens(), labelStyle);
+        player1 = new Player(false, "Joueur", 8, 0, null, null);
+        bot1 = new Player(true, "Bot 1", 8, 0, null, null);
 
-        // Initialisation des decks
+        players = new ArrayList<>();
+        players.add(player1);
+        players.add(bot1);
+
+        round = new Round(players);
+        round.initRound();
+        tokensLabel = new Label("Jetons : " + player1.getTokens(), labelStyle);
+        victoires = new HashMap<>();
+        for (Player p : players) {
+            victoires.put(p.getName(), 0);
+        }
+
         sandyDeck = new Deck("sandy");
         bloodyDeck = new Deck("bloody");
         sandyDeck.deckInit();
         bloodyDeck.deckInit();
 
-        // Main du joueur
         playerHand = new ArrayList<>();
         playerHandImages = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
@@ -132,7 +157,7 @@ public class Main extends ApplicationAdapter {
         });
         stage.addActor(bloodyDiscardImage);
 
-        // Pioche rouge
+       
         Image bloodyDeckimage = new Image(new TextureRegionDrawable(CardAssets.backBloody));
         bloodyDeckimage.setSize(cardWidth, cardHeight);
         bloodyDeckimage.setPosition(screenWidth - 2 * cardWidth - 650, screenHeight / 2 - cardHeight / 2);
@@ -147,7 +172,6 @@ public class Main extends ApplicationAdapter {
         });
         stage.addActor(bloodyDeckimage);
 
-        // Pioche jaune
         Image sandyDeckimage = new Image(new TextureRegionDrawable(CardAssets.backSandy));
         sandyDeckimage.setSize(cardWidth, cardHeight);
         sandyDeckimage.setPosition(50 + cardWidth + 600, screenHeight / 2 - cardHeight / 2);
@@ -162,14 +186,14 @@ public class Main extends ApplicationAdapter {
         });
         stage.addActor(sandyDeckimage);
 
-        // Tableau de score
         Table scoreTable = new Table();
         scoreTable.bottom().left().pad(20).padBottom(100);
         scoreTable.setFillParent(true);
 
-        Label manchesLabel = new Label("Manches : 3", labelStyle);
+        manchesLabel = new Label("Manche : " + manche, labelStyle);
+        tourLabel = new Label("Tour : " + tourDansManche, labelStyle);
         Label victoiresLabel = new Label("Victoires : 1", labelStyle);
-        Label tourLabel = new Label("Tour : 1", labelStyle);
+        
         
 
         manchesLabel.setFontScale(2.0f);
@@ -183,7 +207,7 @@ public class Main extends ApplicationAdapter {
         scoreTable.add(victoiresLabel).left();
         stage.addActor(scoreTable);
 
-        // Boutons de contrôle
+        
         Table buttonTable = new Table();
         buttonTable.bottom().right().pad(40).padBottom(150);
         buttonTable.setFillParent(true);
@@ -193,6 +217,12 @@ public class Main extends ApplicationAdapter {
 
         playButton.getLabel().setFontScale(2.0f);
         passButton.getLabel().setFontScale(2.0f);
+        passButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                nextPlayer();
+            }
+        });
 
         buttonTable.add(playButton).padRight(20).size(300, 100);
         buttonTable.add(passButton).size(300, 100);
@@ -272,6 +302,7 @@ public class Main extends ApplicationAdapter {
         mustDiscard = false;
         doubleColor = null;
         renderPlayerHand();
+        nextPlayer();
     }
 
     private void updateDiscardVisual(Image image, Card topCard) {
@@ -295,5 +326,96 @@ public class Main extends ApplicationAdapter {
         batch.dispose();
         stage.dispose();
         CardAssets.dispose();
+    }
+
+    private void endManche() {
+        Logic logic = new Logic();
+        Player winner = logic.getWinner(players);
+        System.out.println("Gagnant de la manche : " + winner.getName());
+    
+        victoires.put(winner.getName(), victoires.getOrDefault(winner.getName(), 0) + 1);
+    
+        round = Logic.rotation(round, winner);
+        players = round.getPlayers();
+    
+        if (players.size() == 1) {
+            displayEndGame(players.get(0).getName());
+            gameEnded = true;
+            return;
+        }
+    
+        manche++;
+        if (manche > 3) {
+            int min = Collections.min(victoires.values());
+            players.removeIf(p -> victoires.getOrDefault(p.getName(), 0) == min);
+    
+            if (players.size() == 1) {
+                displayEndGame(players.get(0).getName());
+            } else {
+                Player finalWinner = new Logic().getWinner(players);
+                displayEndGame(finalWinner.getName());
+            }
+    
+            gameEnded = true;
+            return;
+        }
+    
+        tourDansManche = 1;
+        currentPlayerIndex = 0;
+        updateLabels();
+        round.initRound();
+    }
+
+    private void displayEndGame(String winnerName) {
+        Label finLabel = new Label("FIN DE PARTIE\nVainqueur : " + winnerName,
+                new Label.LabelStyle(new BitmapFont(), Color.GOLD));
+        finLabel.setFontScale(3f);
+        finLabel.setPosition((screenWidth - 400) / 2f, screenHeight / 2f);
+        stage.addActor(finLabel);
+    }
+    
+    
+
+    private void botPlays(Player bot) {
+        String action = Logic.botLogic(bot);
+        if (action.equals("draw sandy")) {
+            Card old = bot.getSandyCard();
+            discardSandy.add(old);
+            bot.setSandyCard(sandyDeck.pickCard());
+            updateDiscardVisual(sandyDiscardImage, old);
+        } else if (action.equals("draw bloody")) {
+            Card old = bot.getBloodyCard();
+            discardBloody.add(old);
+            bot.setBloodyCard(bloodyDeck.pickCard());
+            updateDiscardVisual(bloodyDiscardImage, old);
+        }
+    }
+    
+    private void updateLabels() {
+        tourLabel.setText("Tour : " + tourDansManche);
+        manchesLabel.setText("Manche : " + manche);
+        tokensLabel.setText("Jetons : " + player1.getTokens());
+    }
+
+    private void nextPlayer() {
+        if (gameEnded) return;
+        currentPlayerIndex++;
+    
+        if (currentPlayerIndex >= players.size()) {
+            currentPlayerIndex = 0;
+            tourDansManche++;
+    
+            if (tourDansManche > 3) {
+                endManche();
+            }
+        }
+    
+        Player current = players.get(currentPlayerIndex);
+        System.out.println("le" + current.getName() + "possède les cartes : " + current.getSandyCard().getValue() + " et " + current.getBloodyCard().getValue());
+        if (current.getIsBot()) {
+            botPlays(current);
+            nextPlayer();
+        }
+        updateLabels();
     }
 }
