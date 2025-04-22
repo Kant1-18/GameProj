@@ -11,10 +11,10 @@ public class Round {
 
     public Round(ArrayList<Player> players) {
         this.players = players;
-        this.sandyDeck = new Deck("sand");
-        this.bloodyDeck = new Deck("blood");
-        this.sandyDiscard = new Deck("sand");
-        this.bloodyDiscard = new Deck("blood");
+        this.sandyDeck = new Deck("sandy");
+        this.bloodyDeck = new Deck("bloody");
+        this.sandyDiscard = new Deck("sandy");
+        this.bloodyDiscard = new Deck("bloody");
         this.Turn = 0;
     }
 
@@ -28,8 +28,8 @@ public class Round {
         this.players.remove(player);
     }
 
-    private void initRound() {
-        this.Turn = 0;
+    public void initRound() {
+        this.Turn = 1;
         this.sandyDeck.deckInit();
         this.bloodyDeck.deckInit();
 
@@ -39,32 +39,27 @@ public class Round {
         }
     }
 
-    public void play() {
-        this.initRound();
-        while (this.Turn <= 3) {
-            for (Player player : this.players) {
-                if (player.getIsBot()) {
-                    String result = Logic.botLogic(player);
-                    switch (result) {
-                        case "draw sand":
-                            this.sandyDiscard.addCard(player.getSandyCard());
-                            player.setSandyCard(this.sandyDeck.pickCard());
-                            break;
-                        case "draw blood":
-                            this.bloodyDiscard.addCard(player.getBloodyCard());
-                            player.setBloodyCard(this.bloodyDeck.pickCard());
-                            break;
-                        case "pass turn":
-                            continue;
-                    }
-                }
-                else {
-                    break;
+    public void playTurn() {
+        for (Player player : this.players) {
+            if (player.getIsBot()) {
+                String result = Logic.botLogic(player);
+                switch (result) {
+                    case "draw sandy":
+                        this.sandyDiscard.addCard(player.getSandyCard());
+                        player.setSandyCard(this.sandyDeck.pickCard());
+                        continue;
+                    case "draw bloody":
+                        this.bloodyDiscard.addCard(player.getBloodyCard());
+                        player.setBloodyCard(this.bloodyDeck.pickCard());
+                        continue;
+                    case "pass turn":
+                        continue;
                 }
             }
-
-            this.incrementTurn();
-            break;
+            else {
+                break;
+            }
         }
+        this.incrementTurn();
     }
 }

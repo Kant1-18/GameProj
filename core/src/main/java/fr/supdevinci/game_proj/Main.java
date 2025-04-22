@@ -1,54 +1,34 @@
 package fr.supdevinci.game_proj;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.utils.viewport.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Stage stage;
-
-    private ArrayList<Card> playerHand;
-    private ArrayList<Image> playerHandImages;
-
-    private Deck sandyDeck;
-    private Deck bloodyDeck;
-
-    private Player player1;
-
-    
-    private Label tokensLabel;
-
-    private ArrayList<Card> discardSandy = new ArrayList<>();
-    private ArrayList<Card> discardBloody = new ArrayList<>();
-
-    private Image sandyDiscardImage;
-    private Image bloodyDiscardImage;
-
-    private boolean mustDiscard = false;
+    private Deck sandyDeck, bloodyDeck;
+    private ArrayList<Card> playerHand = new ArrayList<>();
+    private ArrayList<Image> playerHandImages = new ArrayList<>();
+    private ArrayList<Card> discardSandy = new ArrayList<>(), discardBloody = new ArrayList<>();
+    private Player player1 = new Player(false, "Joueur", 8, 0, null, null);
+    private Player bot1 = new Player(true, "Bot 1", 8, 0, null, null);
+    private ArrayList<Player> players = new ArrayList<>();
+    private Round round;
+    private int manche = 1, tourDansManche = 1, currentPlayerIndex = 0;
+    private boolean mustDiscard = false, gameEnded = false;
     private String doubleColor = null;
-
-    private final int cardWidth = 120;
-    private final int cardHeight = 180;
-    private final int screenWidth = 1920;
-    private final int screenHeight = 1080;
+    private HashMap<String, Integer> victoires = new HashMap<>();
+    private Label tokensLabel, manchesLabel, tourLabel;
+    private Image sandyDiscardImage, bloodyDiscardImage;
+    private final int cardWidth = 120, cardHeight = 180, screenWidth = 1920, screenHeight = 1080;
 
     @Override
     public void create() {
@@ -59,227 +39,175 @@ public class Main extends ApplicationAdapter {
         BitmapFont font = new BitmapFont();
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         TextButtonStyle buttonStyle = new TextButtonStyle();
-        buttonStyle.font = font;
-        buttonStyle.fontColor = Color.BLACK;
-        player1 = new Player(false, "Joueur", 5, 0, null, null);
-        tokensLabel = new Label("Jetons : " + player1.getTokens(), labelStyle);
+        buttonStyle.font = font; buttonStyle.fontColor = Color.BLACK;
 
-        // Initialisation des decks
-        sandyDeck = new Deck("sandy");
-        bloodyDeck = new Deck("bloody");
-        sandyDeck.deckInit();
-        bloodyDeck.deckInit();
+        players.add(player1); players.add(bot1);
+        for (Player p : players) victoires.put(p.getName(), 0);
+        round = new Round(players); round.initRound();
 
-        // Main du joueur
-        playerHand = new ArrayList<>();
-        playerHandImages = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
-            addCardToHand(sandyDeck.pickCard());
-            addCardToHand(bloodyDeck.pickCard());
-        }
+        sandyDeck = new Deck("sandy"); bloodyDeck = new Deck("bloody");
+        sandyDeck.deckInit(); bloodyDeck.deckInit();
 
-        Image sandyBack = new Image(new TextureRegionDrawable(CardAssets.backSandy));
-        sandyBack.setSize(cardWidth, cardHeight);
-        sandyBack.setPosition(
-                (screenWidth - 2 * (cardWidth + 20)) / 2,
-                screenHeight - cardHeight - 50
-        );
-        stage.addActor(sandyBack);
+        addCardToHand(sandyDeck.pickCard()); addCardToHand(bloodyDeck.pickCard());
 
-        Image bloodyBack = new Image(new TextureRegionDrawable(CardAssets.backBloody));
-        bloodyBack.setSize(cardWidth, cardHeight);
-        bloodyBack.setPosition(
-                (screenWidth - 2 * (cardWidth + 20)) / 2 + cardWidth + 20,
-                screenHeight - cardHeight - 50
-        );
-        stage.addActor(bloodyBack);
+        addCardBack(CardAssets.backSandy, (screenWidth - 2 * (cardWidth + 20)) / 2);
+        addCardBack(CardAssets.backBloody, (screenWidth - 2 * (cardWidth + 20)) / 2 + cardWidth + 20);
 
-        sandyDiscardImage = new Image(new TextureRegionDrawable(new Card(2, "sandy").getTextureRegion()));
-        sandyDiscardImage.setSize(cardWidth, cardHeight);
-        sandyDiscardImage.setPosition(500, screenHeight / 2 - cardHeight / 2);
-        sandyDiscardImage.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (playerHand.size() < 3 && !discardSandy.isEmpty() && !mustDiscard && player1.bet()) {
-                    Card card = discardSandy.remove(discardSandy.size() - 1);
-                    addCardToHand(card);
-                    updateTokenDisplay();
-                    if (!discardSandy.isEmpty()) {
-                        updateDiscardVisual(sandyDiscardImage, discardSandy.get(discardSandy.size() - 1));
-                    }
-                }
-            }
-        });
-        stage.addActor(sandyDiscardImage);
+        sandyDiscardImage = addDiscard(new Card(2, "sandy"), 500, discardSandy);
+        bloodyDiscardImage = addDiscard(new Card(7, "bloody"), screenWidth - cardWidth - 500, discardBloody);
 
-        bloodyDiscardImage = new Image(new TextureRegionDrawable(new Card(7, "bloody").getTextureRegion()));
-        bloodyDiscardImage.setSize(cardWidth, cardHeight);
-        bloodyDiscardImage.setPosition(screenWidth - cardWidth - 500, screenHeight / 2 - cardHeight / 2);
-        bloodyDiscardImage.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (playerHand.size() < 3 && !discardBloody.isEmpty() && !mustDiscard && player1.bet()) {
-                    Card card = discardBloody.remove(discardBloody.size() - 1);
-                    addCardToHand(card);
-                    updateTokenDisplay();
-                    System.out.println("token" + player1.getTokens());
-                    if (!discardBloody.isEmpty()) {
-                        updateDiscardVisual(bloodyDiscardImage, discardBloody.get(discardBloody.size() - 1));
-                    }
-                }
-                
-            }
-        });
-        stage.addActor(bloodyDiscardImage);
+        addDeck(CardAssets.backBloody, screenWidth - 2 * cardWidth - 650, bloodyDeck);
+        addDeck(CardAssets.backSandy, 50 + cardWidth + 600, sandyDeck);
 
-        // Pioche rouge
-        Image bloodyDeckimage = new Image(new TextureRegionDrawable(CardAssets.backBloody));
-        bloodyDeckimage.setSize(cardWidth, cardHeight);
-        bloodyDeckimage.setPosition(screenWidth - 2 * cardWidth - 650, screenHeight / 2 - cardHeight / 2);
-        bloodyDeckimage.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (playerHand.size() < 3 && !mustDiscard && player1.bet()) {
-                    addCardToHand(bloodyDeck.pickCard());
-                    updateTokenDisplay();
-                }
-            }
-        });
-        stage.addActor(bloodyDeckimage);
-
-        // Pioche jaune
-        Image sandyDeckimage = new Image(new TextureRegionDrawable(CardAssets.backSandy));
-        sandyDeckimage.setSize(cardWidth, cardHeight);
-        sandyDeckimage.setPosition(50 + cardWidth + 600, screenHeight / 2 - cardHeight / 2);
-        sandyDeckimage.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (playerHand.size() < 3 && !mustDiscard && player1.bet()) {
-                    addCardToHand(sandyDeck.pickCard());
-                    updateTokenDisplay();
-                }
-            }
-        });
-        stage.addActor(sandyDeckimage);
-
-        // Tableau de score
         Table scoreTable = new Table();
-        scoreTable.bottom().left().pad(20).padBottom(100);
-        scoreTable.setFillParent(true);
+        scoreTable.bottom().left().pad(20).padBottom(100); scoreTable.setFillParent(true);
 
-        Label manchesLabel = new Label("Manches : 3", labelStyle);
-        Label victoiresLabel = new Label("Victoires : 1", labelStyle);
-        Label tourLabel = new Label("Tour : 1", labelStyle);
-        
-
-        manchesLabel.setFontScale(2.0f);
-        victoiresLabel.setFontScale(2.0f);
-        tourLabel.setFontScale(2.0f);
-        tokensLabel.setFontScale(2.0f);
-
+        manchesLabel = new Label("Manche : " + manche, labelStyle);
+        tourLabel = new Label("Tour : " + tourDansManche, labelStyle);
+        tokensLabel = new Label("Jetons : " + player1.getTokens(), labelStyle);
+        Arrays.asList(tokensLabel, tourLabel, manchesLabel).forEach(label -> label.setFontScale(2.0f));
         scoreTable.add(tokensLabel).left().row();
         scoreTable.add(tourLabel).left().row();
-        scoreTable.add(manchesLabel).left().row();
-        scoreTable.add(victoiresLabel).left();
+        scoreTable.add(manchesLabel).left();
         stage.addActor(scoreTable);
 
-        // Boutons de contrôle
         Table buttonTable = new Table();
-        buttonTable.bottom().right().pad(40).padBottom(150);
-        buttonTable.setFillParent(true);
-
-        TextButton playButton = new TextButton("Jouer", buttonStyle);
+        buttonTable.bottom().right().pad(40).padBottom(150); buttonTable.setFillParent(true);
         TextButton passButton = new TextButton("Passer mon tour", buttonStyle);
-
-        playButton.getLabel().setFontScale(2.0f);
         passButton.getLabel().setFontScale(2.0f);
-
-        buttonTable.add(playButton).padRight(20).size(300, 100);
+        passButton.addListener(new ClickListener() { public void clicked(InputEvent e, float x, float y) { nextPlayer(); }});
         buttonTable.add(passButton).size(300, 100);
         stage.addActor(buttonTable);
     }
 
+    private void addCardBack(TextureRegion region, int x) {
+        Image back = new Image(new TextureRegionDrawable(region));
+        back.setSize(cardWidth, cardHeight); back.setPosition(x, screenHeight - cardHeight - 50);
+        stage.addActor(back);
+    }
+
+    private Image addDiscard(Card card, int x, ArrayList<Card> pile) {
+        Image img = new Image(new TextureRegionDrawable(card.getTextureRegion()));
+        img.setSize(cardWidth, cardHeight); img.setPosition(x, screenHeight / 2 - cardHeight / 2);
+        img.addListener(new ClickListener() {
+            public void clicked(InputEvent e, float x, float y) {
+                if (playerHand.size() < 3 && !pile.isEmpty() && !mustDiscard && player1.bet()) {
+                    addCardToHand(pile.remove(pile.size() - 1));
+                    updateTokenDisplay();
+                    if (!pile.isEmpty()) updateDiscardVisual(img, pile.get(pile.size() - 1));
+                }
+            }
+        });
+        stage.addActor(img);
+        return img;
+    }
+
+    private void addDeck(TextureRegion region, int x, Deck deck) {
+        Image img = new Image(new TextureRegionDrawable(region));
+        img.setSize(cardWidth, cardHeight); img.setPosition(x, screenHeight / 2 - cardHeight / 2);
+        img.addListener(new ClickListener() {
+            public void clicked(InputEvent e, float x, float y) {
+                if (playerHand.size() < 3 && !mustDiscard && player1.bet()) {
+                    addCardToHand(deck.pickCard()); updateTokenDisplay();
+                }
+            }
+        });
+        stage.addActor(img);
+    }
+
     private void addCardToHand(Card card) {
         playerHand.add(card);
-        int sandyCount = 0;
-        int bloodyCount = 0;
-
+        int sandyCount = 0, bloodyCount = 0;
         for (Card c : playerHand) {
-            if (c.getColor().equals("sandy"))
-                sandyCount++;
-            if (c.getColor().equals("bloody"))
-                bloodyCount++;
+            if (c.getColor().equals("sandy")) sandyCount++;
+            if (c.getColor().equals("bloody")) bloodyCount++;
         }
-
-        if (sandyCount > 1) {
-            mustDiscard = true;
-            doubleColor = "sandy";
-        } else if (bloodyCount > 1) {
-            mustDiscard = true;
-            doubleColor = "bloody";
-        } else {
-            mustDiscard = false;
-            doubleColor = null;
-        }
-
+        mustDiscard = sandyCount > 1 || bloodyCount > 1;
+        doubleColor = sandyCount > 1 ? "sandy" : bloodyCount > 1 ? "bloody" : null;
         renderPlayerHand();
     }
 
     private void renderPlayerHand() {
-        for (Image img : playerHandImages) {
-            stage.getActors().removeValue(img, true);
-        }
+        playerHandImages.forEach(img -> stage.getActors().removeValue(img, true));
         playerHandImages.clear();
-
         for (int i = 0; i < playerHand.size(); i++) {
             Card card = playerHand.get(i);
             Image img = new Image(new TextureRegionDrawable(card.getTextureRegion()));
             img.setSize(cardWidth, cardHeight);
-            img.setPosition(
-                    (screenWidth - (playerHand.size() * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20),
-                    50);
-
+            img.setPosition((screenWidth - (playerHand.size() * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20), 50);
             final int index = i;
-
             img.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    if (mustDiscard) {
-                        if (playerHand.get(index).getColor().equals(doubleColor)) {
-                            discardCard(index);
-                        }
-                    }
+                public void clicked(InputEvent e, float x, float y) {
+                    if (mustDiscard && playerHand.get(index).getColor().equals(doubleColor)) discardCard(index);
                 }
             });
-
-            stage.addActor(img);
-            playerHandImages.add(img);
+            stage.addActor(img); playerHandImages.add(img);
         }
     }
 
     private void discardCard(int index) {
-        Card card = playerHand.get(index);
-
-        if (card.getColor().equals("sandy")) {
-            discardSandy.add(card);
-            updateDiscardVisual(sandyDiscardImage, card);
-        } else {
-            discardBloody.add(card);
-            updateDiscardVisual(bloodyDiscardImage, card);
-        }
-
-        playerHand.remove(index);
-        mustDiscard = false;
-        doubleColor = null;
-        renderPlayerHand();
+        Card card = playerHand.remove(index);
+        if (card.getColor().equals("sandy")) discardSandy.add(card); else discardBloody.add(card);
+        updateDiscardVisual(card.getColor().equals("sandy") ? sandyDiscardImage : bloodyDiscardImage, card);
+        mustDiscard = false; doubleColor = null; renderPlayerHand(); nextPlayer();
     }
 
-    private void updateDiscardVisual(Image image, Card topCard) {
-        image.setDrawable(new TextureRegionDrawable(topCard.getTextureRegion()));
+    private void updateDiscardVisual(Image img, Card card) {
+        img.setDrawable(new TextureRegionDrawable(card.getTextureRegion()));
     }
 
     private void updateTokenDisplay() {
         tokensLabel.setText("Jetons : " + player1.getTokens());
+    }
+
+    private void updateLabels() {
+        tourLabel.setText("Tour : " + tourDansManche);
+        manchesLabel.setText("Manche : " + manche);
+        updateTokenDisplay();
+    }
+
+    private void displayEndGame(String winner) {
+        Label fin = new Label("FIN DE PARTIE\nVainqueur : " + winner, new Label.LabelStyle(new BitmapFont(), Color.GOLD));
+        fin.setFontScale(3f); fin.setPosition((screenWidth - 400) / 2f, screenHeight / 2f);
+        stage.addActor(fin);
+    }
+
+    private void endManche() {
+        Player winner = new Logic().getWinner(players);
+        victoires.put(winner.getName(), victoires.get(winner.getName()) + 1);
+        round = Logic.rotation(round, winner); players = round.getPlayers();
+        if (players.size() == 1) { displayEndGame(players.get(0).getName()); gameEnded = true; return; }
+        manche++;
+        if (manche > 3) {
+            int min = Collections.min(victoires.values());
+            players.removeIf(p -> victoires.getOrDefault(p.getName(), 0) == min);
+            Player finalWinner = players.size() == 1 ? players.get(0) : new Logic().getWinner(players);
+            displayEndGame(finalWinner.getName()); gameEnded = true; return;
+        }
+        tourDansManche = 1; currentPlayerIndex = 0; updateLabels(); round.initRound();
+    }
+
+    private void nextPlayer() {
+        if (gameEnded) return;
+        currentPlayerIndex++;
+        if (currentPlayerIndex >= players.size()) {
+            currentPlayerIndex = 0; tourDansManche++;
+            if (tourDansManche > 3) { endManche(); return; }
+        }
+        Player current = players.get(currentPlayerIndex);
+        if (current.getIsBot()) { botPlays(current); nextPlayer(); }
+        updateLabels();
+    }
+
+    private void botPlays(Player bot) {
+        String action = Logic.botLogic(bot);
+        if (action.equals("draw sandy")) {
+            discardSandy.add(bot.getSandyCard()); bot.setSandyCard(sandyDeck.pickCard());
+            updateDiscardVisual(sandyDiscardImage, bot.getSandyCard());
+        } else if (action.equals("draw bloody")) {
+            discardBloody.add(bot.getBloodyCard()); bot.setBloodyCard(bloodyDeck.pickCard());
+            updateDiscardVisual(bloodyDiscardImage, bot.getBloodyCard());
+        }
     }
 
     @Override
@@ -292,8 +220,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        batch.dispose();
-        stage.dispose();
-        CardAssets.dispose();
+        batch.dispose(); stage.dispose(); CardAssets.dispose();
     }
 }

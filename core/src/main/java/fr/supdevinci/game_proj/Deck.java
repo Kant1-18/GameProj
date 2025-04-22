@@ -34,11 +34,11 @@ public class Deck {
     }
 
     public void deckInit() {
-        
         for (int i = 1; i <= 7; i++) {
-            this.cards.add(new Card(i, this.color));
+            for (int j = 0; j < 3; j++) { 
+                this.cards.add(new Card(i, this.color));
+            }
         }
-
         this.shuffle();
     }
 }
