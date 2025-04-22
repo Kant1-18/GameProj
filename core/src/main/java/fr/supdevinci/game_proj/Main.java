@@ -15,9 +15,9 @@ public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Stage stage;
     private Deck sandyDeck, bloodyDeck;
-    private ArrayList<Card> playerHand = new ArrayList<>();
+    private ArrayList<SabaccCard> playerHand = new ArrayList<>();
     private ArrayList<Image> playerHandImages = new ArrayList<>();
-    private ArrayList<Card> discardSandy = new ArrayList<>(), discardBloody = new ArrayList<>();
+    private ArrayList<SabaccCard> discardSandy = new ArrayList<>(), discardBloody = new ArrayList<>();
     private Player player1 = new Player(false, "Joueur", 8, 0, null, null);
     private Player bot1 = new Player(true, "Bot 1", 8, 0, null, null);
     private ArrayList<Player> players = new ArrayList<>();
@@ -45,16 +45,16 @@ public class Main extends ApplicationAdapter {
         for (Player p : players) victoires.put(p.getName(), 0);
         round = new Round(players); round.initRound();
 
-        sandyDeck = new Deck("sandy"); bloodyDeck = new Deck("bloody");
-        sandyDeck.deckInit(); bloodyDeck.deckInit();
+        sandyDeck = Logic.deckInit("sandy");
+        bloodyDeck = Logic.deckInit("bloody");
 
         addCardToHand(sandyDeck.pickCard()); addCardToHand(bloodyDeck.pickCard());
 
         addCardBack(CardAssets.backSandy, (screenWidth - 2 * (cardWidth + 20)) / 2);
         addCardBack(CardAssets.backBloody, (screenWidth - 2 * (cardWidth + 20)) / 2 + cardWidth + 20);
 
-        sandyDiscardImage = addDiscard(new Card(2, "sandy"), 500, discardSandy);
-        bloodyDiscardImage = addDiscard(new Card(7, "bloody"), screenWidth - cardWidth - 500, discardBloody);
+        sandyDiscardImage = addDiscard(new SabaccCard(2, "sandy"), 500, discardSandy);
+        bloodyDiscardImage = addDiscard(new SabaccCard(7, "bloody"), screenWidth - cardWidth - 500, discardBloody);
 
         addDeck(CardAssets.backBloody, screenWidth - 2 * cardWidth - 650, bloodyDeck);
         addDeck(CardAssets.backSandy, 50 + cardWidth + 600, sandyDeck);
@@ -86,7 +86,7 @@ public class Main extends ApplicationAdapter {
         stage.addActor(back);
     }
 
-    private Image addDiscard(Card card, int x, ArrayList<Card> pile) {
+    private Image addDiscard(SabaccCard card, int x, ArrayList<SabaccCard> pile) {
         Image img = new Image(new TextureRegionDrawable(card.getTextureRegion()));
         img.setSize(cardWidth, cardHeight); img.setPosition(x, screenHeight / 2 - cardHeight / 2);
         img.addListener(new ClickListener() {
@@ -115,10 +115,10 @@ public class Main extends ApplicationAdapter {
         stage.addActor(img);
     }
 
-    private void addCardToHand(Card card) {
+    private void addCardToHand(SabaccCard card) {
         playerHand.add(card);
         int sandyCount = 0, bloodyCount = 0;
-        for (Card c : playerHand) {
+        for (SabaccCard c : playerHand) {
             if (c.getColor().equals("sandy")) sandyCount++;
             if (c.getColor().equals("bloody")) bloodyCount++;
         }
@@ -131,7 +131,7 @@ public class Main extends ApplicationAdapter {
         playerHandImages.forEach(img -> stage.getActors().removeValue(img, true));
         playerHandImages.clear();
         for (int i = 0; i < playerHand.size(); i++) {
-            Card card = playerHand.get(i);
+            SabaccCard card = playerHand.get(i);
             Image img = new Image(new TextureRegionDrawable(card.getTextureRegion()));
             img.setSize(cardWidth, cardHeight);
             img.setPosition((screenWidth - (playerHand.size() * (cardWidth + 20) - 20)) / 2 + i * (cardWidth + 20), 50);
@@ -146,13 +146,13 @@ public class Main extends ApplicationAdapter {
     }
 
     private void discardCard(int index) {
-        Card card = playerHand.remove(index);
+        SabaccCard card = playerHand.remove(index);
         if (card.getColor().equals("sandy")) discardSandy.add(card); else discardBloody.add(card);
         updateDiscardVisual(card.getColor().equals("sandy") ? sandyDiscardImage : bloodyDiscardImage, card);
         mustDiscard = false; doubleColor = null; renderPlayerHand(); nextPlayer();
     }
 
-    private void updateDiscardVisual(Image img, Card card) {
+    private void updateDiscardVisual(Image img, SabaccCard card) {
         img.setDrawable(new TextureRegionDrawable(card.getTextureRegion()));
     }
 

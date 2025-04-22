@@ -11,10 +11,10 @@ public class Round {
 
     public Round(ArrayList<Player> players) {
         this.players = players;
-        this.sandyDeck = new Deck("sandy");
-        this.bloodyDeck = new Deck("bloody");
-        this.sandyDiscard = new Deck("sandy");
-        this.bloodyDiscard = new Deck("bloody");
+        this.sandyDeck = Logic.deckInit("sandy");
+        this.bloodyDeck = Logic.deckInit("bloody");
+        this.sandyDiscard = Logic.deckInit("sandy");
+        this.bloodyDiscard = Logic.deckInit("bloody");
         this.Turn = 0;
     }
 
@@ -30,8 +30,8 @@ public class Round {
 
     public void initRound() {
         this.Turn = 1;
-        this.sandyDeck.deckInit();
-        this.bloodyDeck.deckInit();
+        this.sandyDeck = Logic.deckInit("sandy");
+        this.bloodyDeck = Logic.deckInit("bloody");
 
         for (Player player : this.players) {
             player.setSandyCard(this.sandyDeck.pickCard());

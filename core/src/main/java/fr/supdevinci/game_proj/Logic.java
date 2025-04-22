@@ -98,4 +98,15 @@ public class Logic {
         }
         return new Round(round.getPlayers());
     }
+
+    public static Deck deckInit(String color) {
+        Deck deck = new Deck(new ArrayList<>());
+        for (int i = 1; i <= 7; i++) {
+            for (int j = 0; j < 3; j++) {
+                deck.addCard(new SabaccCard(i, color));
+            }
+        }
+        deck.shuffle();
+        return deck;
+    }
 }

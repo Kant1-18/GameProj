@@ -5,10 +5,10 @@ public class Player {
     private String name;
     private Integer tokens;
     private Integer stake;
-    private Card sandyCard;
-    private Card bloodyCard;
+    private SabaccCard sandyCard;
+    private SabaccCard bloodyCard;
 
-    public Player(Boolean isBot, String name, Integer tokens, Integer stake, Card sandyCard, Card bloodyCard){
+    public Player(Boolean isBot, String name, Integer tokens, Integer stake, SabaccCard sandyCard, SabaccCard bloodyCard){
         this.isBot = isBot;
         this.name = name;
         this.tokens = tokens;
@@ -25,18 +25,18 @@ public class Player {
 
     public Integer getStake(){ return this.stake; }
 
-    public Card getSandyCard(){ return this.sandyCard; }
+    public SabaccCard getSandyCard(){ return this.sandyCard; }
 
-    public Card getBloodyCard(){ return this.bloodyCard; }
+    public SabaccCard getBloodyCard(){ return this.bloodyCard; }
 
-    public void setSandyCard(Card sandyCard) {
+    public void setSandyCard(SabaccCard sandyCard) {
         if (sandyCard.getColor() != "sandy") {
             throw new IllegalArgumentException("Card must be of color 'sandy'");
         }
         this.sandyCard = sandyCard;
     }
 
-    public void setBloodyCard(Card bloodyCard) {
+    public void setBloodyCard(SabaccCard bloodyCard) {
         if (bloodyCard.getColor() != "bloody") {
             throw new IllegalArgumentException("Card must be of color 'bloody'");
         }

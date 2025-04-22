@@ -1,49 +1,60 @@
 package fr.supdevinci.game_proj;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
-import fr.supdevinci.game_proj.Card;
-import fr.supdevinci.game_proj.Deck;
 
 class DeckTest {
+    class TestCard implements Card {}
 
-    @Test
-    void testDeckInitialization() {
-        Deck deck = new Deck("sandy");
-        deck.deckInit();
-        ArrayList<Card> cards = deck.getCards();
+    private Deck deck;
 
-        assertEquals(21, cards.size(), "Le deck doit contenir 21 cartes après initialisation");
-
-        for (Card card : cards) {
-            assertEquals("sandy", card.getColor());
-            assertTrue(card.getValue() >= 1 && card.getValue() <= 7, "La valeur de la carte doit être entre 1 et 7");
-        }
+    @BeforeEach
+    void setUp() {
+        ArrayList<TestCard> initialCards = new ArrayList<TestCard>();
+        initialCards.add(new TestCard());
+        initialCards.add(new TestCard());
+        initialCards.add(new TestCard());
+        deck = new Deck(initialCards);
     }
 
     @Test
-    void testPickCardReducesDeckSize() {
-        Deck deck = new Deck("bloody");
-        deck.deckInit();
-        int initialSize = deck.getCards().size();
+    void testGetCardsReturnsCorrectList() {
+        assertEquals(3, deck.getCards().size(), "Deck should contain 3 cards initially");
+    }
 
-        Card picked = deck.pickCard();
+    @Test
+    void testPickCardReturnsAndRemovesCard() {
+        Card firstCard = deck.getCards().get(0);
+        Card pickedCard = deck.pickCard();
 
-        assertNotNull(picked, "La carte piochée ne doit pas être nulle");
-        assertEquals(initialSize - 1, deck.getCards().size(), "La taille du deck doit diminuer de 1 après un pick");
+        assertEquals(firstCard, pickedCard, "Picked card should be the first card in the deck");
+        assertEquals(2, deck.getCards().size(), "Deck should now contain 2 cards");
     }
 
     @Test
     void testAddCardIncreasesDeckSize() {
-        Deck deck = new Deck("bloody");
-        deck.deckInit();
-        int initialSize = deck.getCards().size();
-
-        Card newCard = new Card(3, "bloody");
+        Card newCard = new TestCard();
         deck.addCard(newCard);
 
-        assertEquals(initialSize + 1, deck.getCards().size(), "La taille du deck doit augmenter de 1 après ajout");
-        assertTrue(deck.getCards().contains(newCard), "Le deck doit contenir la carte ajoutée");
+        assertEquals(4, deck.getCards().size(), "Deck should now contain 4 cards after adding one");
+        assertTrue(deck.getCards().contains(newCard), "Deck should contain the newly added card");
+    }
+
+    @Test
+    void testShuffleChangesOrder() {
+        ArrayList<TestCard> originalOrder = new ArrayList<>(deck.getCards());
+        deck.shuffle();
+        // Attention, il existe une chance que le shuffle ne change pas l'ordre par hasard
+        boolean orderChanged = false;
+        for (int i = 0; i < originalOrder.size(); i++) {
+            if (!originalOrder.get(i).equals(deck.getCards().get(i))) {
+                orderChanged = true;
+                break;
+            }
+        }
+        assertTrue(orderChanged || deck.getCards().size() <= 1, "Deck should be shuffled if more than 1 card");
     }
 }
