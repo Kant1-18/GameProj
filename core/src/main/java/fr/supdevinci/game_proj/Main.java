@@ -14,7 +14,7 @@ import java.util.*;
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Stage stage;
-    private Deck sandyDeck, bloodyDeck;
+    private Deck<SabaccCard> sandyDeck, bloodyDeck;
     private ArrayList<SabaccCard> playerHand = new ArrayList<>();
     private ArrayList<Image> playerHandImages = new ArrayList<>();
     private ArrayList<SabaccCard> discardSandy = new ArrayList<>(), discardBloody = new ArrayList<>();
@@ -102,7 +102,7 @@ public class Main extends ApplicationAdapter {
         return img;
     }
 
-    private void addDeck(TextureRegion region, int x, Deck deck) {
+    private void addDeck(TextureRegion region, int x, Deck<SabaccCard> deck) {
         Image img = new Image(new TextureRegionDrawable(region));
         img.setSize(cardWidth, cardHeight); img.setPosition(x, screenHeight / 2 - cardHeight / 2);
         img.addListener(new ClickListener() {

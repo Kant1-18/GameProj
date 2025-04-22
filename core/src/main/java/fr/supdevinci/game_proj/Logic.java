@@ -99,8 +99,8 @@ public class Logic {
         return new Round(round.getPlayers());
     }
 
-    public static Deck deckInit(String color) {
-        Deck deck = new Deck(new ArrayList<>());
+    public static Deck<SabaccCard> deckInit(String color) {
+        Deck<SabaccCard> deck = new Deck<SabaccCard>(new ArrayList<>());
         for (int i = 1; i <= 7; i++) {
             for (int j = 0; j < 3; j++) {
                 deck.addCard(new SabaccCard(i, color));

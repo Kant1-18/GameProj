@@ -2,27 +2,27 @@ package fr.supdevinci.game_proj;
 
 import java.util.ArrayList;
 
-public class Deck {
-    private ArrayList<SabaccCard> cards;
+public class Deck <T extends Card> {
+    private ArrayList<T> cards;
 
-    public Deck(ArrayList<SabaccCard> cards) {
-        this.cards = new ArrayList<SabaccCard>(cards);
+    public Deck(ArrayList<T> cards) {
+        this.cards = new ArrayList<T>(cards);
     }
 
-    public ArrayList<SabaccCard> getCards() { return cards; }
+    public ArrayList<T> getCards() { return cards; }
 
-    public SabaccCard pickCard() {
-        SabaccCard card = this.cards.get(0);
+    public T pickCard() {
+        T card = this.cards.get(0);
         this.cards.remove(0);
         return card;
     }
 
-    public void addCard(SabaccCard card) {
+    public void addCard(T card) {
         this.cards.add(card);
     }
 
     public void shuffle() {
-        ArrayList<SabaccCard> shuffledCards = new ArrayList<>();
+        ArrayList<T> shuffledCards = new ArrayList<>();
         while (this.cards.size() > 0) {
             int randomIndex = (int) (Math.random() * this.cards.size());
             shuffledCards.add(this.cards.get(randomIndex));

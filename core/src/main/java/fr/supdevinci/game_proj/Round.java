@@ -4,10 +4,10 @@ import java.util.ArrayList;
 public class Round {
     private Integer Turn;
     private ArrayList<Player> players;
-    private Deck sandyDeck;
-    private Deck bloodyDeck;
-    private Deck sandyDiscard;
-    private Deck bloodyDiscard;
+    private Deck<SabaccCard> sandyDeck;
+    private Deck<SabaccCard> bloodyDeck;
+    private Deck<SabaccCard> sandyDiscard;
+    private Deck<SabaccCard> bloodyDiscard;
 
     public Round(ArrayList<Player> players) {
         this.players = players;

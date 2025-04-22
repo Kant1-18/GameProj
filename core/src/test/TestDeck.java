@@ -9,7 +9,7 @@ import java.util.ArrayList;
 class DeckTest {
     class TestCard implements Card {}
 
-    private Deck deck;
+    private Deck<TestCard> deck;
 
     @BeforeEach
     void setUp() {
@@ -17,7 +17,7 @@ class DeckTest {
         initialCards.add(new TestCard());
         initialCards.add(new TestCard());
         initialCards.add(new TestCard());
-        deck = new Deck(initialCards);
+        deck = new Deck<TestCard>(initialCards);
     }
 
     @Test
@@ -27,8 +27,8 @@ class DeckTest {
 
     @Test
     void testPickCardReturnsAndRemovesCard() {
-        Card firstCard = deck.getCards().get(0);
-        Card pickedCard = deck.pickCard();
+        TestCard firstCard = deck.getCards().get(0);
+        TestCard pickedCard = deck.pickCard();
 
         assertEquals(firstCard, pickedCard, "Picked card should be the first card in the deck");
         assertEquals(2, deck.getCards().size(), "Deck should now contain 2 cards");
@@ -36,7 +36,7 @@ class DeckTest {
 
     @Test
     void testAddCardIncreasesDeckSize() {
-        Card newCard = new TestCard();
+        TestCard newCard = new TestCard();
         deck.addCard(newCard);
 
         assertEquals(4, deck.getCards().size(), "Deck should now contain 4 cards after adding one");
