@@ -28,7 +28,7 @@ public class CardAssets {
         sandyCards = new ArrayList<>();
         bloodyCards = new ArrayList<>();
 
-        // Sandy cards (ligne 1)
+        
         for (int i = 0; i < 8; i++) {
             int x = startX + i * (cardWidth + spacingX);
             int y = startY;
@@ -36,7 +36,7 @@ public class CardAssets {
         }
         backSandy = new TextureRegion(texture, 2160, 55, 230, 350);
 
-        // Bloody cards (ligne 2)
+        
         for (int i = 0; i < 8; i++) {
             int x = startX + i * (cardWidth + spacingX);
             int y = startY + cardHeight + spacingY;
@@ -44,7 +44,7 @@ public class CardAssets {
         }
         backBloody = new TextureRegion(texture, 2160, 435, 230, 350);
 
-        // Jeton (position fixe)
+        
         token = new TextureRegion(texture, 1785, 1220, 72, 72);
     }
 
