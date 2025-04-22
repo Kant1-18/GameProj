@@ -2,6 +2,7 @@ package fr.supdevinci.game_proj;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import fr.supdevinci.game_proj.Card;
 
 class CardTest {
 
